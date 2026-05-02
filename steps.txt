@@ -2,115 +2,90 @@ GANNON FORUM — MANUAL SETUP STEPS
 ==================================
 Generated: 2026-04-30 | Updated: 2026-05-02
 
-STEP 0: Install Backend Dependencies (NEW — do this first)
-═══════════════════════════════════════════════════════════
-The backend is now scaffolded at: animated-website2/backend/
-
-  cd animated-website2/backend
-  npm install
-
-Then fill in backend/.env with your real values (see Steps 2–3 below).
-To run locally:
-  npm run dev     ← starts on http://localhost:3001
-  npm start       ← production mode
-
-These are actions that Claude cannot perform automatically.
-Complete them in order before deploying.
+═══════════════════════════════════════════════════
+COMPLETED ✅
+═══════════════════════════════════════════════════
+✅ MongoDB Atlas — connected (MONGODB_URI set in .env)
+✅ JWT_SECRET — set in .env
+✅ Backend deployed to Render (Root Directory: backend)
+✅ Vercel frontend deployed
+✅ Frontend wired to real API (auth, posts, groups, likes)
 
 ═══════════════════════════════════════════════════
-STEP 1: Install infsh CLI (for nano-banana-2 skill)
+STEP 1 — REQUIRED: Set Render environment variables
 ═══════════════════════════════════════════════════
-The nano-banana-2 skill requires the inference.sh CLI (`infsh`).
-The Python SDK is installed but the CLI binary was not found on npm.
+Your backend/.env file has credentials but Render does NOT read .env
+from git. Add these in Render → your service → Environment:
 
-To install:
-  Visit https://inference.sh and follow their CLI installation guide.
-  Or try: pip install inferencesh  (Python SDK — already installed)
-  Then authenticate: infsh login
+  MONGODB_URI      = (your Atlas connection string)
+  JWT_SECRET       = ea12af470a1410613f092be61f1c5113c03e2a17da9d1453f74ee322b5ba8e91
+  JWT_EXPIRES_IN   = 7d
+  EMAIL_DOMAIN_WHITELIST = gannon.edu
+  NODE_ENV         = production
+  FRONTEND_URL     = (your Vercel URL, e.g. https://your-app.vercel.app)
 
-If infsh cannot be installed, nano-banana-2 will fall back to Tier 2
-(design skill SVG generation) in the pipeline.
-
-═══════════════════════════════════════════════════
-STEP 2: MongoDB Atlas Setup
-═══════════════════════════════════════════════════
-1. Create a MongoDB Atlas account at https://www.mongodb.com/atlas
-2. Create a new cluster (free M0 tier is fine for development)
-3. Create a database named: gannon_forum
-4. Create collections: users, posts, comments, groups, messages
-5. Add a database user with read/write access
-6. Get your connection string (looks like: mongodb+srv://user:pass@cluster.mongodb.net/gannon_forum)
-7. Add the connection string to your backend .env file as:
-   MONGODB_URI=mongodb+srv://...
-
-8. Whitelist your IP address (or 0.0.0.0/0 for development)
+After adding them, click "Save Changes" — Render auto-redeploys.
 
 ═══════════════════════════════════════════════════
-STEP 3: Email Verification Service (Resend or SendGrid)
+STEP 2 — REQUIRED: Update API_URL in index.html
 ═══════════════════════════════════════════════════
-The platform requires email verification for @gannon.edu accounts.
+The frontend calls the backend via a hardcoded URL. Open index.html
+and find line:
 
-Option A — Resend (recommended, generous free tier):
-  1. Sign up at https://resend.com
-  2. Add and verify your domain (or use sandbox for testing)
-  3. Get your API key
-  4. Add to backend .env: RESEND_API_KEY=re_xxxx
+  const API_URL = 'https://animated2.onrender.com'; ← already set, no action needed
 
-Option B — SendGrid:
-  1. Sign up at https://sendgrid.com
-  2. Get API key
-  3. Add to backend .env: SENDGRID_API_KEY=SG.xxxx
-
-Also set in .env:
-  EMAIL_FROM=noreply@gannonforum.com (or your verified domain)
-  EMAIL_DOMAIN_WHITELIST=gannon.edu
+Replace with your actual Render service URL, then commit and push
+so Vercel picks up the change.
 
 ═══════════════════════════════════════════════════
-STEP 4: Backend Deployment (Render)
+STEP 3 — REQUIRED: Set FRONTEND_URL in Render
 ═══════════════════════════════════════════════════
-1. Create account at https://render.com
-2. Connect your GitHub repo
-3. Create a new Web Service:
-   - Build Command: npm install
-   - Start Command: npm start (or node server.js)
-4. Add environment variables in Render dashboard:
-   - MONGODB_URI (from Step 2)
-   - JWT_SECRET (generate a random 64-char string)
-   - RESEND_API_KEY or SENDGRID_API_KEY (from Step 3)
-   - EMAIL_FROM
-   - EMAIL_DOMAIN_WHITELIST=gannon.edu
-   - FRONTEND_URL (your Vercel URL, added after Step 5)
-   - NODE_ENV=production
-5. Note your Render service URL (e.g., https://gannonforum-api.onrender.com)
+Once you have your Vercel URL, set it in Render environment variables:
+
+  FRONTEND_URL = https://your-app.vercel.app
+
+This is what the CORS config in server.js uses to allow requests from
+your frontend. Without it, browsers will block API calls.
 
 ═══════════════════════════════════════════════════
-STEP 5: Frontend Deployment (Vercel)
+STEP 4 — OPTIONAL: Custom domain
 ═══════════════════════════════════════════════════
-1. Create account at https://vercel.com
-2. Import your GitHub repo
-3. Add environment variables:
-   - VITE_API_URL (your Render URL from Step 4)
-   - or NEXT_PUBLIC_API_URL if using Next.js
-4. Deploy
-5. Note your Vercel URL and add it to Render as FRONTEND_URL (Step 4)
-
-═══════════════════════════════════════════════════
-STEP 6: Domain (Optional)
-═══════════════════════════════════════════════════
-If you want a custom domain (e.g., gannonforum.com):
+If you want gannonforum.com (or similar):
 1. Purchase domain from Namecheap, Google Domains, etc.
 2. Add to Vercel: Project → Settings → Domains
 3. Update DNS records as instructed by Vercel
-4. Update FRONTEND_URL in Render environment variables
+4. Update FRONTEND_URL in Render to match the new domain
 
 ═══════════════════════════════════════════════════
-SKILL STATUS SUMMARY
+STEP 5 — FUTURE: Real messaging (currently mock UI)
 ═══════════════════════════════════════════════════
-✅ brand           — Working (uses docs/brand-guidelines.md)
-✅ ui-ux-pro-max   — Working (Python scripts, no external deps)
-✅ design-system   — Working (Python + Node scripts)
-✅ design          — Working (Python scripts, logo/icon/cip)
-✅ ui-styling      — Working (Python scripts, shadcn + tailwind)
-✅ slides          — Working (references only, no scripts needed)
-✅ banner-design   — Partial (requires ai-artist/ai-multimodal/chrome-devtools skills not present)
-⚠️  nano-banana-2  — Needs infsh CLI installed (see Step 1 above)
+The Messages tab currently shows placeholder conversations.
+To wire it to real DMs, you need:
+  - A user-search endpoint (GET /api/users?q=email) so users can
+    find each other by email and get their MongoDB _id
+  - Update the frontend to load real DM threads via:
+      GET  /api/messages/dm/:userId
+      POST /api/messages/dm  { recipientId, body }
+  - Optionally add WebSocket support (socket.io) for real-time
+
+═══════════════════════════════════════════════════
+WHAT'S LIVE NOW
+═══════════════════════════════════════════════════
+✅ Register with @gannon.edu email + password → account created in MongoDB
+✅ Sign in → JWT issued, stored in localStorage (session persists on refresh)
+✅ Feed loads real posts from database, sorted by top-week / recent / most-liked
+✅ Like button calls real API (toggle like per user)
+✅ Create Post → saved to MongoDB, feed refreshes
+✅ Groups page loads real groups from database
+✅ Join group → persisted in MongoDB
+✅ Create Group → saved to MongoDB
+⚠️  Messages → mock UI (see Step 5 above to make real)
+⚠️  Group chat → mock UI
+⚠️  Comments → API exists but UI not wired (POST /api/posts/:id/comments)
+
+═══════════════════════════════════════════════════
+SKILL STATUS
+═══════════════════════════════════════════════════
+✅ brand, ui-ux-pro-max, design-system, design, ui-styling — all fired
+⚠️  nano-banana-2 — needs infsh CLI (visit https://inference.sh)
+⚠️  banner-design — needs ai-artist/ai-multimodal skills

@@ -431,7 +431,7 @@ body {
           Sign In
         </button>
         <p style="text-align:center;font-size:12px;color:var(--color-muted);margin-top:16px;">
-          Demo: use any @gannon.edu email + any password
+          Only @gannon.edu accounts may sign in.
         </p>
       </form>
 
@@ -918,35 +918,21 @@ body {
      JAVASCRIPT
 ═══════════════════════════════════════════════════════════ -->
 <script>
+// ── Config — update to your Render URL ────────────────────────
+const API_URL = 'https://animated2.onrender.com';
+
 // ── State ─────────────────────────────────────────────────────
 let currentUser = null;
+let currentToken = null;
+let currentUserId = null;
 let currentView = 'feed';
 let currentFilter = 'week';
 let activeConvo = null;
 let toastTimer = null;
+let POSTS = [];
+let GROUPS = [];
 
-// ── Data ──────────────────────────────────────────────────────
-const POSTS = [
-  { id:1, group:'Computer Science', author:'j.miller@gannon.edu', time:'2h ago', title:'Breakthrough in Quantum Computing Algorithms for Optimization Problems', votes:842, comments:124 },
-  { id:2, group:'Physics Dept',     author:'s.keller@gannon.edu', time:'5h ago', title:'New observations on the expansion rate of the local universe', votes:621, comments:89 },
-  { id:3, group:'Campus Events',    author:'events@gannon.edu',   time:'8h ago', title:'Annual Research Symposium — this Friday in Hamot Hall', votes:403, comments:34 },
-  { id:4, group:'Debate Club',      author:'r.chen@gannon.edu',   time:'12h ago', title:'Ethics of AI in Academic Research: An Open Discussion', votes:295, comments:212 },
-  { id:5, group:'Marketplace',      author:'m.white@gannon.edu',  time:'1d ago', title:'Selling Advanced Engineering Mathematics (10th Ed) — Excellent condition', votes:188, comments:12 },
-  { id:6, group:'Student Union',    author:'p.jones@gannon.edu',  time:'1d ago', title:'Update on Library Extended Hours for Finals Week', votes:142, comments:45 },
-  { id:7, group:'Study Groups',     author:'a.smith@gannon.edu',  time:'2d ago', title:'Looking for study partners for Calc III midterm — meeting Tues/Thurs', votes:98, comments:18 },
-];
-
-const GROUPS = [
-  { id:1, name:'Advanced Macroeconomics',  cat:'Classes', members:1200, desc:'Graduate-level economic theory and quantitative modeling discussions.',   joined:false },
-  { id:2, name:'Bio-Ethics Research Lab',  cat:'Study',   members:458,  desc:'Peer review and resource sharing for bioethics and modern medicine.',     joined:true  },
-  { id:3, name:'Philosophy & Film',        cat:'Social',  members:3100, desc:'Weekly analysis of classic and contemporary cinema through a philosophical lens.', joined:false },
-  { id:4, name:'The Gannon Chess Society', cat:'Clubs',   members:124,  desc:'Strategic play, historical analysis, and competitive ladders for all levels.', joined:false },
-  { id:5, name:'Data Science Capstone',    cat:'Study',   members:215,  desc:'Project management and peer assistance for data science capstone students.', joined:false },
-  { id:6, name:'Intro to Quantum Theory',  cat:'Classes', members:89,   desc:'Foundational concepts and mathematics for physics undergraduates.',         joined:true  },
-  { id:7, name:'CIS 101 — Intro to CS',    cat:'Classes', members:47,   desc:'Discussion and support for the introductory computer science course.',       joined:true  },
-  { id:8, name:'Student Union Open Forum', cat:'Social',  members:890,  desc:'Campus announcements, events, and community discussion for all students.',   joined:false },
-];
-
+// Messages stay as mock — DMs need a user-search endpoint to be built
 const CONVOS = [
   { id:1, name:'Julian Sterling', email:'j.sterling@gannon.edu', initials:'JS', lastMsg:'The methodology section needs revision...', time:'10:42 AM', unread:0, online:true,
     messages:[
@@ -983,6 +969,24 @@ const MEMBERS = [
   { initials:'RG', email:'r.garcia@gannon.edu',      role:'',      color:'rgba(74,144,217,0.2)', textColor:'#4A90D9' },
 ];
 
+// ── API helper ────────────────────────────────────────────────
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (currentToken) headers['Authorization'] = 'Bearer ' + currentToken;
+  const res = await fetch(API_URL + path, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || (data.errors && data.errors[0] && data.errors[0].msg) || 'Request failed');
+  return data;
+}
+
+function timeAgo(iso) {
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60)   return 'Just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400)return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
 // ── Auth ──────────────────────────────────────────────────────
 function switchAuthTab(tab) {
   const signin   = document.getElementById('signin-form');
@@ -1011,7 +1015,7 @@ function validateGannonEmail(input, errId) {
   return true;
 }
 
-function handleSignIn(e) {
+async function handleSignIn(e) {
   e.preventDefault();
   const email = document.getElementById('si-email').value.trim();
   const pass  = document.getElementById('si-password').value;
@@ -1032,10 +1036,19 @@ function handleSignIn(e) {
     document.getElementById('si-password').classList.remove('error');
     document.getElementById('si-pass-err').classList.remove('show');
   }
-  if (ok) login(email);
+  if (!ok) return;
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const data = await api('/api/auth/login', { method:'POST', body: JSON.stringify({ email, password: pass }) });
+    loginSuccess(data);
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
 }
 
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault();
   const email   = document.getElementById('reg-email').value.trim();
   const pass    = document.getElementById('reg-password').value;
@@ -1064,35 +1077,64 @@ function handleRegister(e) {
     document.getElementById('reg-confirm-err').classList.remove('show');
   }
   if (!terms) { showToast('You must agree to the Terms of Service.', 'error-t'); ok = false; }
-  if (ok) {
-    showToast('Verification email sent to ' + email, 'success');
-    setTimeout(() => login(email), 1200);
+  if (!ok) return;
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const data = await api('/api/auth/register', { method:'POST', body: JSON.stringify({ email, password: pass }) });
+    loginSuccess(data);
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false; btn.textContent = 'Create Account';
   }
 }
 
-function login(email) {
-  currentUser = email;
+function loginSuccess(data) {
+  currentToken  = data.token;
+  currentUser   = data.email;
+  currentUserId = data.id;
+  localStorage.setItem('gf_token',  currentToken);
+  localStorage.setItem('gf_email',  currentUser);
+  localStorage.setItem('gf_userid', currentUserId);
+  mountApp();
+}
+
+function mountApp() {
   document.getElementById('auth-view').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  const initials = email.split('@')[0].split('.').map(p => p[0].toUpperCase()).join('').slice(0,2);
+  const initials = currentUser.split('@')[0].split('.').map(p => p[0].toUpperCase()).join('').slice(0,2);
   document.getElementById('nav-avatar').textContent = initials;
   document.getElementById('profile-avatar').textContent = initials;
-  document.getElementById('profile-email').textContent = email;
-  renderPosts(POSTS);
-  renderGroups(GROUPS);
+  document.getElementById('profile-email').textContent = currentUser;
+  fetchPosts('top-week');
+  fetchGroups();
   renderConvos();
   renderGroupPage();
   initScrollReveal();
-  showToast('Welcome back, ' + email.split('@')[0] + '!', 'success');
+  showToast('Welcome, ' + currentUser.split('@')[0] + '!', 'success');
 }
 
 function signOut() {
-  currentUser = null;
+  currentUser = null; currentToken = null; currentUserId = null;
+  localStorage.removeItem('gf_token');
+  localStorage.removeItem('gf_email');
+  localStorage.removeItem('gf_userid');
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-view').style.display = 'flex';
   document.getElementById('si-email').value = '';
   document.getElementById('si-password').value = '';
 }
+
+// Restore session from localStorage
+(function restoreSession() {
+  const token = localStorage.getItem('gf_token');
+  const email = localStorage.getItem('gf_email');
+  const uid   = localStorage.getItem('gf_userid');
+  if (token && email) {
+    currentToken = token; currentUser = email; currentUserId = uid;
+    mountApp();
+  }
+})();
 
 // ── Navigation ────────────────────────────────────────────────
 function showView(view) {
@@ -1131,36 +1173,56 @@ function toggleMobileMenu() {
 }
 
 // ── Feed ──────────────────────────────────────────────────────
+async function fetchPosts(sort) {
+  const sortMap = { week:'top-week', recent:'recent', liked:'most-liked' };
+  const apiSort = sortMap[sort] || sort || 'top-week';
+  const c = document.getElementById('posts-container');
+  c.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">Loading posts…</p>';
+  try {
+    POSTS = await api('/api/posts?sort=' + apiSort);
+    renderPosts(POSTS);
+  } catch {
+    c.innerHTML = '<p style="color:var(--color-error);padding:20px;text-align:center;">Could not load posts.</p>';
+  }
+}
+
 function renderPosts(posts) {
   const c = document.getElementById('posts-container');
   c.innerHTML = '';
+  if (!posts.length) {
+    c.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">No posts yet — start the conversation.</p>';
+    return;
+  }
   posts.forEach((p, i) => {
-    const delay = Math.min(i * 60, 360);
+    const delay   = Math.min(i * 60, 360);
+    const group   = p.group ? p.group.name : 'General';
+    const author  = p.author ? p.author.email : 'unknown';
+    const votes   = p.likeCount || 0;
+    const comments= p.commentCount || 0;
+    const when    = timeAgo(p.createdAt);
     c.insertAdjacentHTML('beforeend', `
       <article class="post-card anim-fade-up" style="padding:16px 20px;display:flex;gap:16px;animation-delay:${delay}ms;">
-        <!-- Vote column -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px;">
-          <button class="vote-btn" onclick="vote(${p.id},1,this)" title="Upvote">
+          <button class="vote-btn" onclick="vote('${p._id}',this)" title="Like">
             <span class="material-symbols-outlined" style="font-size:22px;">arrow_drop_up</span>
           </button>
-          <span id="votes-${p.id}" style="font-size:16px;font-weight:700;color:var(--color-text);">${p.votes}</span>
-          <button class="vote-btn" onclick="vote(${p.id},-1,this)" title="Downvote">
+          <span id="votes-${p._id}" style="font-size:16px;font-weight:700;color:var(--color-text);">${votes}</span>
+          <button class="vote-btn" title="Downvote" style="opacity:0.4;cursor:default;">
             <span class="material-symbols-outlined" style="font-size:22px;">arrow_drop_down</span>
           </button>
         </div>
-        <!-- Content -->
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-muted);margin-bottom:6px;flex-wrap:wrap;">
-            <span style="font-weight:600;color:var(--color-blue);">${p.group}</span>
+            <span style="font-weight:600;color:var(--color-blue);">${group}</span>
             <span>•</span>
-            <span>Posted by ${p.author}</span>
+            <span>Posted by ${author}</span>
             <span>•</span>
-            <span>${p.time}</span>
+            <span>${when}</span>
           </div>
           <h3 style="font-size:15px;font-weight:700;line-height:1.4;margin-bottom:10px;color:var(--color-text);">${p.title}</h3>
           <div style="display:flex;align-items:center;gap:16px;font-size:12px;color:var(--color-muted);">
             <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'">
-              <span class="material-symbols-outlined" style="font-size:16px;">chat_bubble_outline</span>${p.comments} comments
+              <span class="material-symbols-outlined" style="font-size:16px;">chat_bubble_outline</span>${comments} comments
             </button>
             <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'" onclick="showToast('Link copied!','success')">
               <span class="material-symbols-outlined" style="font-size:16px;">share</span>Share
@@ -1175,11 +1237,14 @@ function renderPosts(posts) {
   });
 }
 
-function vote(id, dir, btn) {
-  const post = POSTS.find(p => p.id === id);
-  if (!post) return;
-  post.votes += dir;
-  document.getElementById('votes-' + id).textContent = post.votes;
+async function vote(postId, btn) {
+  try {
+    const res = await api('/api/posts/' + postId + '/like', { method:'POST' });
+    document.getElementById('votes-' + postId).textContent = res.likeCount;
+    btn.closest('button').classList.toggle('voted-up', res.liked);
+  } catch {
+    showToast('Sign in to like posts.', 'error-t');
+  }
 }
 
 function setFilter(f) {
@@ -1187,37 +1252,49 @@ function setFilter(f) {
   ['week','recent','liked'].forEach(k => {
     const btn = document.getElementById('filter-' + k);
     btn.className = k === f ? 'btn-primary' : 'btn-ghost';
-    btn.style.cssText = k === f ? 'padding:7px 16px;font-size:13px;' : 'padding:7px 16px;font-size:13px;';
+    btn.style.cssText = 'padding:7px 16px;font-size:13px;';
   });
-  let sorted = [...POSTS];
-  if (f === 'recent')  sorted.sort((a,b) => a.id - b.id);
-  if (f === 'liked')   sorted.sort((a,b) => b.votes - a.votes);
-  if (f === 'week')    sorted = POSTS;
-  renderPosts(sorted);
+  fetchPosts(f);
 }
 
 // ── Groups ────────────────────────────────────────────────────
+async function fetchGroups() {
+  try {
+    GROUPS = await api('/api/groups');
+    renderGroups(GROUPS);
+  } catch {
+    const grid = document.getElementById('groups-grid');
+    if (grid) grid.innerHTML = '<p style="color:var(--color-error);padding:20px;">Could not load groups.</p>';
+  }
+}
+
 function renderGroups(groups) {
   const grid = document.getElementById('groups-grid');
   if (!grid) return;
   grid.innerHTML = '';
+  if (!groups.length) {
+    grid.innerHTML = '<p style="color:var(--color-muted);padding:20px;">No groups yet — create one!</p>';
+    return;
+  }
   groups.forEach((g, i) => {
     const delay = Math.min(i * 50, 300);
-    const joinBtn = g.joined
+    const count = g.memberCount || (g.members && g.members.length) || 0;
+    const isMember = g.members && currentUserId && g.members.includes(currentUserId);
+    const joinBtn = isMember
       ? `<button class="btn-ghost" style="flex:1;padding:8px;font-size:13px;color:var(--color-muted);" disabled>Joined</button>`
-      : `<button class="btn-ghost" onclick="joinGroup(${g.id})" style="flex:1;padding:8px;font-size:13px;border-color:var(--color-blue);color:var(--color-blue);">Join</button>`;
+      : `<button class="btn-ghost" onclick="joinGroup('${g._id}',this)" style="flex:1;padding:8px;font-size:13px;border-color:var(--color-blue);color:var(--color-blue);">Join</button>`;
     grid.insertAdjacentHTML('beforeend', `
       <div class="group-card anim-fade-up" style="padding:20px;display:flex;flex-direction:column;gap:14px;animation-delay:${delay}ms;">
         <div style="display:flex;justify-content:space-between;align-items:start;">
-          <span class="badge">${g.cat}</span>
+          <span class="badge">Group</span>
           <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-muted);">
             <span class="material-symbols-outlined" style="font-size:16px;">group</span>
-            ${g.members >= 1000 ? (g.members/1000).toFixed(1)+'k' : g.members}
+            ${count >= 1000 ? (count/1000).toFixed(1)+'k' : count}
           </span>
         </div>
         <div>
           <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">${g.name}</h3>
-          <p style="font-size:13px;color:var(--color-muted);line-height:1.5;">${g.desc}</p>
+          <p style="font-size:13px;color:var(--color-muted);line-height:1.5;">${g.description || 'A student group.'}</p>
         </div>
         <div style="display:flex;gap:8px;margin-top:auto;">
           ${joinBtn}
@@ -1228,27 +1305,41 @@ function renderGroups(groups) {
   });
 }
 
-function joinGroup(id) {
-  const g = GROUPS.find(g => g.id === id);
-  if (g) { g.joined = true; renderGroups(GROUPS); showToast('Joined ' + g.name + '!', 'success'); }
+async function joinGroup(id, btn) {
+  btn.disabled = true; btn.textContent = 'Joining…';
+  try {
+    const res = await api('/api/groups/' + id + '/join', { method:'POST' });
+    const g = GROUPS.find(g => g._id === id);
+    if (g) { g.memberCount = res.memberCount; }
+    showToast('Joined!', 'success');
+    fetchGroups();
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false; btn.textContent = 'Join';
+  }
 }
 
 function filterGroups(query) {
   const q = query.toLowerCase();
-  renderGroups(GROUPS.filter(g => g.name.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q)));
+  renderGroups(GROUPS.filter(g => g.name.toLowerCase().includes(q) || (g.description || '').toLowerCase().includes(q)));
 }
 
 function filterGroupsByCategory(cat) {
   renderGroups(cat ? GROUPS.filter(g => g.cat === cat) : GROUPS);
 }
 
-function createGroup() {
+async function createGroup() {
   const name = document.getElementById('new-group-name').value.trim();
   if (!name) { showToast('Enter a group name.', 'error-t'); return; }
-  GROUPS.unshift({ id: Date.now(), name, cat:'Study', members:1, desc:'A new student group.', joined:true });
-  renderGroups(GROUPS);
-  closeModal('create-group-modal');
-  showToast(name + ' created!', 'success');
+  try {
+    await api('/api/groups', { method:'POST', body: JSON.stringify({ name }) });
+    closeModal('create-group-modal');
+    document.getElementById('new-group-name').value = '';
+    showToast(name + ' created!', 'success');
+    fetchGroups();
+  } catch (err) {
+    showToast(err.message, 'error-t');
+  }
 }
 
 // ── Messages ──────────────────────────────────────────────────
@@ -1427,15 +1518,20 @@ function sendGroupMessage() {
 }
 
 // ── Post submit ───────────────────────────────────────────────
-function submitPost() {
+async function submitPost() {
   const title = document.getElementById('post-title').value.trim();
+  const body  = document.getElementById('post-body').value.trim();
   if (!title) { showToast('Add a post title.', 'error-t'); return; }
-  POSTS.unshift({ id: Date.now(), group:'General', author: currentUser, time:'Just now', title, votes:0, comments:0 });
-  renderPosts(POSTS);
-  closeModal('new-post-modal');
-  document.getElementById('post-title').value = '';
-  document.getElementById('post-body').value = '';
-  showToast('Post published.', 'success');
+  try {
+    await api('/api/posts', { method:'POST', body: JSON.stringify({ title, body }) });
+    closeModal('new-post-modal');
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-body').value = '';
+    showToast('Post published.', 'success');
+    fetchPosts(currentFilter);
+  } catch (err) {
+    showToast(err.message, 'error-t');
+  }
 }
 
 // ── Modals ────────────────────────────────────────────────────
