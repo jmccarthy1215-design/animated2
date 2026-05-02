@@ -79,9 +79,36 @@ WHAT'S LIVE NOW
 ✅ Groups page loads real groups from database
 ✅ Join group → persisted in MongoDB
 ✅ Create Group → saved to MongoDB
+✅ Home feed shows only ungrouped posts
+✅ Groups tab shows groups to join (no posts)
+✅ Group page shows only that group's posts
+✅ Leave Group button works from group page
+✅ Anonymous posting — email hidden from other students, admin can reveal
+✅ Admin accounts — delete posts, delete groups, reveal anonymous emails
 ⚠️  Messages → mock UI (see Step 5 above to make real)
 ⚠️  Group chat → mock UI
 ⚠️  Comments → API exists but UI not wired (POST /api/posts/:id/comments)
+
+═══════════════════════════════════════════════════
+STEP 6 — REQUIRED: Create an admin account in MongoDB
+═══════════════════════════════════════════════════
+Admin accounts can delete posts, delete groups, and reveal the
+real email behind anonymous posts. To make a user an admin:
+
+1. Register a normal account on the site first (e.g. yourname@gannon.edu)
+2. Open MongoDB Atlas → your cluster → Collections → users collection
+3. Find the document for that email address
+4. Click the pencil/edit icon on the document
+5. Find the field  isAdmin  — it will be  false
+6. Change it to  true  and save
+
+That account now has admin powers. When you log in as that user:
+  • Every post has a red "Delete" button
+  • Anonymous posts also show an amber "Reveal" button (shows the real email)
+  • Every group card has a red "Delete" button (deletes group + all its posts)
+
+IMPORTANT: Never commit or share credentials. The isAdmin field is
+the ONLY way to grant admin access — there is no self-serve upgrade.
 
 ═══════════════════════════════════════════════════
 SKILL STATUS

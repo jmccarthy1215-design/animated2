@@ -6,7 +6,8 @@ const postSchema = new mongoose.Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   group: { type: mongoose.Schema.Types.ObjectId, ref: 'Group', default: null },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  commentCount: { type: Number, default: 0 }
+  commentCount: { type: Number, default: 0 },
+  anonymous: { type: Boolean, default: false }
 }, { timestamps: true });
 
 postSchema.index({ createdAt: -1 });

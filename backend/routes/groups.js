@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const requireAuth = require('../middleware/auth');
+const requireAdmin = require('../middleware/requireAdmin');
 const Group = require('../models/Group');
+const Post = require('../models/Post');
 
 // GET /api/groups
 router.get('/', async (_req, res) => {
@@ -47,7 +49,7 @@ router.post('/:id/join', requireAuth, async (req, res) => {
     const group = await Group.findById(req.params.id);
     if (!group) return res.status(404).json({ error: 'Group not found.' });
 
-    if (group.members.includes(req.user.id)) {
+    if (group.members.map(m => m.toString()).includes(req.user.id)) {
       return res.status(400).json({ error: 'Already a member.' });
     }
     if (group.limit && group.members.length >= group.limit) {
@@ -68,7 +70,7 @@ router.delete('/:id/leave', requireAuth, async (req, res) => {
     const group = await Group.findById(req.params.id);
     if (!group) return res.status(404).json({ error: 'Group not found.' });
     if (group.owner.toString() === req.user.id) {
-      return res.status(400).json({ error: 'Owner cannot leave. Transfer ownership or delete the group.' });
+      return res.status(400).json({ error: 'Owner cannot leave. Delete the group instead.' });
     }
 
     group.members = group.members.filter(m => m.toString() !== req.user.id);
@@ -93,6 +95,17 @@ router.delete('/:id/members/:userId', requireAuth, async (req, res) => {
     res.json({ memberCount: group.members.length });
   } catch {
     res.status(500).json({ error: 'Failed to remove member.' });
+  }
+});
+
+// DELETE /api/groups/:id  (admin only — deletes group and its posts)
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    await Group.findByIdAndDelete(req.params.id);
+    await Post.deleteMany({ group: req.params.id });
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: 'Failed to delete group.' });
   }
 });
 

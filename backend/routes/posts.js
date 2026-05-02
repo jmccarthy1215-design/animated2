@@ -1,14 +1,20 @@
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const requireAuth = require('../middleware/auth');
+const requireAdmin = require('../middleware/requireAdmin');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 
-// GET /api/posts?sort=top-week|recent|most-liked&group=<id>
+// GET /api/posts?sort=top-week|recent|most-liked&group=<id>&ungrouped=true
 router.get('/', async (req, res) => {
-  const { sort = 'top-week', group } = req.query;
+  const { sort = 'top-week', group, ungrouped } = req.query;
   const filter = {};
-  if (group) filter.group = group;
+
+  if (ungrouped === 'true') {
+    filter.group = null;
+  } else if (group) {
+    filter.group = group;
+  }
 
   try {
     let query = Post.find(filter).populate('author', 'email').populate('group', 'name');
@@ -18,7 +24,6 @@ router.get('/', async (req, res) => {
     } else if (sort === 'most-liked') {
       query = query.sort({ likes: -1, createdAt: -1 });
     } else {
-      // top-week: posts from the last 7 days sorted by likes
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       filter.createdAt = { $gte: weekAgo };
       query = Post.find(filter).populate('author', 'email').populate('group', 'name')
@@ -26,7 +31,12 @@ router.get('/', async (req, res) => {
     }
 
     const posts = await query.limit(50).lean();
-    res.json(posts.map(p => ({ ...p, likeCount: p.likes.length })));
+    res.json(posts.map(p => ({
+      ...p,
+      likeCount: p.likes.length,
+      // Hide author email if anonymous (non-admins see null)
+      author: p.anonymous ? null : p.author
+    })));
   } catch {
     res.status(500).json({ error: 'Failed to fetch posts.' });
   }
@@ -36,7 +46,8 @@ router.get('/', async (req, res) => {
 router.post('/', requireAuth, [
   body('title').trim().notEmpty().withMessage('Title is required').isLength({ max: 300 }),
   body('body').optional().isLength({ max: 40000 }),
-  body('group').optional().isMongoId()
+  body('group').optional().isMongoId(),
+  body('anonymous').optional().isBoolean()
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -46,7 +57,8 @@ router.post('/', requireAuth, [
       title: req.body.title,
       body: req.body.body || '',
       author: req.user.id,
-      group: req.body.group || null
+      group: req.body.group || null,
+      anonymous: req.body.anonymous || false
     });
     await post.populate('author', 'email');
     res.status(201).json(post);
@@ -71,6 +83,28 @@ router.post('/:id/like', requireAuth, async (req, res) => {
     res.json({ likeCount: post.likes.length, liked: idx === -1 });
   } catch {
     res.status(500).json({ error: 'Failed to update like.' });
+  }
+});
+
+// GET /api/posts/:id/author  (admin only — reveals anonymous post author)
+router.get('/:id/author', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('author', 'email');
+    if (!post) return res.status(404).json({ error: 'Post not found.' });
+    res.json({ email: post.author ? post.author.email : 'unknown' });
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch author.' });
+  }
+});
+
+// DELETE /api/posts/:id  (admin only)
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    await Post.findByIdAndDelete(req.params.id);
+    await Comment.deleteMany({ post: req.params.id });
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: 'Failed to delete post.' });
   }
 });
 

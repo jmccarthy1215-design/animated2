@@ -732,7 +732,7 @@ body {
         </div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn-ghost" style="padding:8px 16px;font-size:13px;" onclick="showToast('Left the group.','error-t')">Leave Group</button>
+        <button class="btn-ghost" style="padding:8px 16px;font-size:13px;" onclick="leaveGroup()">Leave Group</button>
         <button class="btn-ghost" style="padding:8px 16px;font-size:13px;display:flex;align-items:center;gap:4px;">
           <span class="material-symbols-outlined" style="font-size:16px;">settings</span>Manage
         </button>
@@ -741,62 +741,17 @@ body {
 
     <!-- Two-panel -->
     <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;height:calc(100vh - 240px);">
-      <!-- Discussion -->
+      <!-- Group posts feed -->
       <section style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;">
         <div style="padding:14px 20px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:8px;">
           <span class="material-symbols-outlined" style="font-size:20px;color:var(--color-blue);">forum</span>
-          <h3 style="font-size:14px;font-weight:600;color:var(--color-blue);">Discussion Feed</h3>
-          <span style="margin-left:auto;font-size:11px;color:var(--color-muted);">Last 50 messages</span>
+          <h3 style="font-size:14px;font-weight:600;color:var(--color-blue);">Group Posts</h3>
+          <button class="btn-primary" style="margin-left:auto;padding:5px 14px;font-size:12px;display:flex;align-items:center;gap:4px;" onclick="openModal('new-post-modal')">
+            <span class="material-symbols-outlined" style="font-size:15px;">add</span>New Post
+          </button>
         </div>
-        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;" id="group-chat-messages">
-          <!-- Sample messages -->
-          <div style="display:flex;gap:12px;">
-            <div class="avatar" style="background:rgba(245,158,11,0.2);color:var(--color-amber);">JD</div>
-            <div>
-              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
-                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">j.doe@gannon.edu</span>
-                <span style="font-size:11px;color:var(--color-muted);">Today at 9:42 AM</span>
-              </div>
-              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.5;max-width:90%;">
-                Has anyone finished the week 4 logic gates assignment? I'm having trouble with the XOR gate in the simulator.
-              </div>
-            </div>
-          </div>
-          <div style="display:flex;gap:12px;">
-            <div class="avatar" style="background:rgba(34,197,94,0.2);color:var(--color-success);">AM</div>
-            <div>
-              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
-                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">a.martinez@gannon.edu</span>
-                <span style="font-size:11px;color:var(--color-muted);">Today at 10:05 AM</span>
-              </div>
-              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.5;max-width:90%;">
-                Check out page 45 in the textbook — there's a diagram for XOR using only NAND gates. It cleared things up for me!
-              </div>
-            </div>
-          </div>
-          <div style="display:flex;gap:12px;">
-            <div class="avatar" style="background:rgba(74,144,217,0.2);color:var(--color-blue);">PROF</div>
-            <div>
-              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
-                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">prof.wilson@gannon.edu</span>
-                <span class="badge" style="font-size:10px;padding:1px 6px;">Professor</span>
-                <span style="font-size:11px;color:var(--color-muted);">Today at 11:30 AM</span>
-              </div>
-              <div style="background:rgba(74,144,217,0.06);border-left:2px solid var(--color-blue);border-radius:0 8px 8px 0;padding:12px 14px;font-size:14px;line-height:1.5;max-width:95%;">
-                <p style="font-weight:600;margin-bottom:4px;">Official Announcement:</p>
-                Tutorial video on XOR implementation is now in the Archives section. Should address the simulator issues.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="padding:12px 16px;border-top:1px solid var(--color-border);background:rgba(15,23,42,0.5);">
-          <div style="display:flex;align-items:center;gap:8px;background:var(--color-surface2);border:1px solid var(--color-border);border-radius:10px;padding:8px 12px;">
-            <textarea placeholder="Type a message to the group..." rows="1" id="group-msg-input"
-              style="flex:1;background:none;border:none;color:var(--color-text);font-size:14px;outline:none;resize:none;max-height:100px;"></textarea>
-            <button onclick="sendGroupMessage()" class="btn-primary" style="padding:7px;display:flex;border-radius:8px;">
-              <span class="material-symbols-outlined" style="font-size:18px;">send</span>
-            </button>
-          </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;" id="group-posts-container">
+          <p style="color:var(--color-muted);font-size:13px;text-align:center;padding:20px;">Loading posts…</p>
         </div>
       </section>
 
@@ -855,6 +810,10 @@ body {
       </select>
       <textarea class="inp" rows="5" placeholder="What's on your mind?" id="post-body" style="resize:vertical;"></textarea>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-muted);cursor:pointer;margin-bottom:4px;">
+      <input type="checkbox" id="post-anonymous" style="accent-color:var(--color-blue);"/>
+      Post anonymously (your email will be hidden from other students)
+    </label>
     <div style="display:flex;justify-content:flex-end;gap:10px;">
       <button class="btn-ghost" onclick="closeModal('new-post-modal')" style="padding:9px 18px;">Cancel</button>
       <button class="btn-primary" onclick="submitPost()" style="padding:9px 20px;">Post</button>
@@ -912,6 +871,7 @@ const API_URL = 'https://animated2.onrender.com';
 let currentUser = null;
 let currentToken = null;
 let currentUserId = null;
+let currentIsAdmin = false;
 let currentView = 'feed';
 let currentFilter = 'week';
 let activeConvo = null;
@@ -1077,12 +1037,14 @@ async function handleRegister(e) {
 }
 
 function loginSuccess(data) {
-  currentToken  = data.token;
-  currentUser   = data.email;
-  currentUserId = data.id;
-  localStorage.setItem('gf_token',  currentToken);
-  localStorage.setItem('gf_email',  currentUser);
-  localStorage.setItem('gf_userid', currentUserId);
+  currentToken   = data.token;
+  currentUser    = data.email;
+  currentUserId  = data.id;
+  currentIsAdmin = data.isAdmin || false;
+  localStorage.setItem('gf_token',   currentToken);
+  localStorage.setItem('gf_email',   currentUser);
+  localStorage.setItem('gf_userid',  currentUserId);
+  localStorage.setItem('gf_isAdmin', currentIsAdmin ? '1' : '0');
   mountApp();
 }
 
@@ -1102,10 +1064,11 @@ function mountApp() {
 }
 
 function signOut() {
-  currentUser = null; currentToken = null; currentUserId = null;
+  currentUser = null; currentToken = null; currentUserId = null; currentIsAdmin = false;
   localStorage.removeItem('gf_token');
   localStorage.removeItem('gf_email');
   localStorage.removeItem('gf_userid');
+  localStorage.removeItem('gf_isAdmin');
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-view').style.display = 'flex';
   document.getElementById('si-email').value = '';
@@ -1117,8 +1080,10 @@ function signOut() {
   const token = localStorage.getItem('gf_token');
   const email = localStorage.getItem('gf_email');
   const uid   = localStorage.getItem('gf_userid');
+  const admin = localStorage.getItem('gf_isAdmin');
   if (token && email) {
     currentToken = token; currentUser = email; currentUserId = uid;
+    currentIsAdmin = admin === '1';
     mountApp();
   }
 })();
@@ -1160,36 +1125,54 @@ function toggleMobileMenu() {
 }
 
 // ── Feed ──────────────────────────────────────────────────────
-async function fetchPosts(sort) {
+async function fetchPosts(sort, groupId, containerId) {
   const sortMap = { week:'top-week', recent:'recent', liked:'most-liked' };
   const apiSort = sortMap[sort] || sort || 'top-week';
-  const c = document.getElementById('posts-container');
-  c.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">Loading posts…</p>';
+  const cId = containerId || 'posts-container';
+  const c = document.getElementById(cId);
+  if (c) c.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">Loading posts…</p>';
   try {
-    POSTS = await api('/api/posts?sort=' + apiSort);
-    renderPosts(POSTS);
+    let url = '/api/posts?sort=' + apiSort;
+    if (groupId) {
+      url += '&group=' + groupId;
+    } else {
+      url += '&ungrouped=true';
+    }
+    const posts = await api(url);
+    if (!groupId) POSTS = posts;
+    renderPosts(posts, cId);
     updateProfileStats();
   } catch {
-    c.innerHTML = '<p style="color:var(--color-error);padding:20px;text-align:center;">Could not load posts.</p>';
+    if (c) c.innerHTML = '<p style="color:var(--color-error);padding:20px;text-align:center;">Could not load posts.</p>';
   }
 }
 
-function renderPosts(posts) {
-  const c = document.getElementById('posts-container');
+function renderPosts(posts, containerId) {
+  const c = document.getElementById(containerId || 'posts-container');
+  if (!c) return;
   c.innerHTML = '';
   if (!posts.length) {
     c.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">No posts yet — start the conversation.</p>';
     return;
   }
   posts.forEach((p, i) => {
-    const delay   = Math.min(i * 60, 360);
-    const group   = p.group ? p.group.name : 'General';
-    const author  = p.author ? p.author.email : 'unknown';
-    const votes   = p.likeCount || 0;
-    const comments= p.commentCount || 0;
-    const when    = timeAgo(p.createdAt);
+    const delay    = Math.min(i * 60, 360);
+    const group    = p.group ? p.group.name : '';
+    const isAnon   = p.anonymous && !p.author;
+    const author   = isAnon ? 'Anonymous' : (p.author ? p.author.email : 'unknown');
+    const votes    = p.likeCount || 0;
+    const comments = p.commentCount || 0;
+    const when     = timeAgo(p.createdAt);
+    const adminControls = currentIsAdmin ? `
+      <button onclick="adminDeletePost('${p._id}',this)" style="background:none;border:none;cursor:pointer;color:var(--color-error);display:flex;align-items:center;gap:4px;font-size:12px;margin-left:auto;">
+        <span class="material-symbols-outlined" style="font-size:16px;">delete</span>Delete
+      </button>
+      ${isAnon ? `<button onclick="adminRevealEmail('${p._id}',this)" style="background:none;border:none;cursor:pointer;color:var(--color-amber);display:flex;align-items:center;gap:4px;font-size:12px;">
+        <span class="material-symbols-outlined" style="font-size:16px;">visibility</span>Reveal
+      </button>` : ''}
+    ` : '';
     c.insertAdjacentHTML('beforeend', `
-      <article class="post-card anim-fade-up" style="padding:16px 20px;display:flex;gap:16px;animation-delay:${delay}ms;">
+      <article class="post-card anim-fade-up" style="padding:16px 20px;display:flex;gap:16px;animation-delay:${delay}ms;" id="post-card-${p._id}">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px;">
           <button class="vote-btn" onclick="vote('${p._id}',this)" title="Like">
             <span class="material-symbols-outlined" style="font-size:22px;">arrow_drop_up</span>
@@ -1201,23 +1184,20 @@ function renderPosts(posts) {
         </div>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-muted);margin-bottom:6px;flex-wrap:wrap;">
-            <span style="font-weight:600;color:var(--color-blue);">${group}</span>
-            <span>•</span>
-            <span>Posted by ${author}</span>
+            ${group ? `<span style="font-weight:600;color:var(--color-blue);">${group}</span><span>•</span>` : ''}
+            <span id="author-${p._id}">Posted by <span style="${isAnon ? 'color:var(--color-muted);font-style:italic;' : ''}">${author}</span></span>
             <span>•</span>
             <span>${when}</span>
           </div>
           <h3 style="font-size:15px;font-weight:700;line-height:1.4;margin-bottom:10px;color:var(--color-text);">${p.title}</h3>
-          <div style="display:flex;align-items:center;gap:16px;font-size:12px;color:var(--color-muted);">
+          <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:var(--color-muted);flex-wrap:wrap;">
             <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'">
               <span class="material-symbols-outlined" style="font-size:16px;">chat_bubble_outline</span>${comments} comments
             </button>
             <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'" onclick="showToast('Link copied!','success')">
               <span class="material-symbols-outlined" style="font-size:16px;">share</span>Share
             </button>
-            <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'" onclick="showToast('Post saved!','success')">
-              <span class="material-symbols-outlined" style="font-size:16px;">bookmark_border</span>Save
-            </button>
+            ${adminControls}
           </div>
         </div>
       </article>
@@ -1316,6 +1296,7 @@ function openGroupPage(groupId) {
     if (ds) ds.textContent = g.description || '';
   }
   showView('group-page');
+  fetchPosts('top-week', groupId, 'group-posts-container');
 }
 
 function renderGroups(groups) {
@@ -1349,6 +1330,7 @@ function renderGroups(groups) {
         <div style="display:flex;gap:8px;margin-top:auto;">
           ${joinBtn}
           <button onclick="openGroupPage('${g._id}')" class="btn-ghost" style="padding:8px 12px;font-size:13px;">View</button>
+          ${currentIsAdmin ? `<button onclick="adminDeleteGroup('${g._id}',this)" class="btn-ghost" style="padding:8px 12px;font-size:13px;color:var(--color-error);border-color:var(--color-error);">Delete</button>` : ''}
         </div>
       </div>
     `);
@@ -1585,15 +1567,72 @@ async function submitPost() {
   const body  = document.getElementById('post-body').value.trim();
   if (!title) { showToast('Add a post title.', 'error-t'); return; }
   const groupId = document.getElementById('post-group').value || undefined;
+  const anonymous = document.getElementById('post-anonymous').checked;
   try {
-    await api('/api/posts', { method:'POST', body: JSON.stringify({ title, body, group: groupId }) });
+    await api('/api/posts', { method:'POST', body: JSON.stringify({ title, body, group: groupId, anonymous }) });
     closeModal('new-post-modal');
     document.getElementById('post-title').value = '';
     document.getElementById('post-body').value = '';
+    document.getElementById('post-anonymous').checked = false;
     showToast('Post published.', 'success');
     fetchPosts(currentFilter);
   } catch (err) {
     showToast(err.message, 'error-t');
+  }
+}
+
+// ── Leave / Admin actions ─────────────────────────────────────
+async function leaveGroup() {
+  if (!currentGroupId) return;
+  try {
+    await api('/api/groups/' + currentGroupId + '/leave', { method:'DELETE' });
+    showToast('You left the group.', 'success');
+    currentGroupId = null;
+    fetchGroups();
+    showView('groups');
+  } catch (err) {
+    showToast(err.message, 'error-t');
+  }
+}
+
+async function adminDeletePost(postId, btn) {
+  if (!confirm('Delete this post?')) return;
+  btn.disabled = true;
+  try {
+    await api('/api/posts/' + postId, { method:'DELETE' });
+    const card = document.getElementById('post-card-' + postId);
+    if (card) card.remove();
+    showToast('Post deleted.', 'success');
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false;
+  }
+}
+
+async function adminRevealEmail(postId, btn) {
+  btn.disabled = true;
+  try {
+    const data = await api('/api/posts/' + postId + '/author');
+    const authorEl = document.getElementById('author-' + postId);
+    if (authorEl) authorEl.innerHTML = 'Posted by <span style="color:var(--color-amber);">' + data.email + ' (anon)</span>';
+    btn.textContent = data.email;
+    btn.style.color = 'var(--color-amber)';
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false;
+  }
+}
+
+async function adminDeleteGroup(groupId, btn) {
+  if (!confirm('Delete this group and all its posts?')) return;
+  btn.disabled = true;
+  try {
+    await api('/api/groups/' + groupId, { method:'DELETE' });
+    showToast('Group deleted.', 'success');
+    fetchGroups();
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false;
   }
 }
 

@@ -8,13 +8,12 @@ const DOMAIN = process.env.EMAIL_DOMAIN_WHITELIST || 'gannon.edu';
 
 function issueToken(user) {
   return jwt.sign(
-    { id: user._id, email: user.email },
+    { id: user._id, email: user.email, isAdmin: user.isAdmin || false },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 }
 
-// POST /api/auth/register
 router.post('/register', [
   body('email').isEmail().withMessage('Valid email required')
     .custom(v => v.endsWith(`@${DOMAIN}`) || Promise.reject(`Only @${DOMAIN} emails are accepted.`)),
@@ -32,14 +31,13 @@ router.post('/register', [
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await User.create({ email, passwordHash });
 
-    res.status(201).json({ token: issueToken(user), email: user.email, id: user._id });
+    res.status(201).json({ token: issueToken(user), email: user.email, id: user._id, isAdmin: user.isAdmin });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Registration failed.' });
   }
 });
 
-// POST /api/auth/login
 router.post('/login', [
   body('email').isEmail(),
   body('password').notEmpty()
@@ -54,7 +52,7 @@ router.post('/login', [
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    res.json({ token: issueToken(user), email: user.email, id: user._id });
+    res.json({ token: issueToken(user), email: user.email, id: user._id, isAdmin: user.isAdmin });
   } catch {
     res.status(500).json({ error: 'Login failed.' });
   }
