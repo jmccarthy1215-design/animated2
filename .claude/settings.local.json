@@ -39,7 +39,10 @@
       "mcp__stitch__fetch_screen_code",
       "mcp__firecrawl-mcp__firecrawl_browser_create",
       "mcp__firecrawl-mcp__firecrawl_browser_execute",
-      "mcp__firecrawl-mcp__firecrawl_browser_delete"
+      "mcp__firecrawl-mcp__firecrawl_browser_delete",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
