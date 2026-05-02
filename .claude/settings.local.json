@@ -36,7 +36,10 @@
       "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"student forum community academic dark structured\" --design-system -p \"GannonForum\" -f markdown)",
       "Bash(python3 .claude/skills/design-system/scripts/search-slides.py \"forum dark academic structured\" --all)",
       "Bash(python3 *)",
-      "mcp__stitch__fetch_screen_code"
+      "mcp__stitch__fetch_screen_code",
+      "mcp__firecrawl-mcp__firecrawl_browser_create",
+      "mcp__firecrawl-mcp__firecrawl_browser_execute",
+      "mcp__firecrawl-mcp__firecrawl_browser_delete"
     ]
   }
 }

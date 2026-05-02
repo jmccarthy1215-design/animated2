@@ -554,21 +554,7 @@ body {
     <!-- Left sidebar -->
     <aside style="padding:20px 16px;border-right:1px solid var(--color-border);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;" class="hidden lg:block">
       <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);padding:0 12px 8px;">Your Groups</p>
-      <a class="sidebar-link active" onclick="showView('group-page')">
-        <span class="material-symbols-outlined" style="font-size:18px;">terminal</span> Computer Science
-      </a>
-      <a class="sidebar-link" onclick="showView('group-page')">
-        <span class="material-symbols-outlined" style="font-size:18px;">science</span> Physics Dept
-      </a>
-      <a class="sidebar-link" onclick="showView('group-page')">
-        <span class="material-symbols-outlined" style="font-size:18px;">campaign</span> Student Union
-      </a>
-      <a class="sidebar-link" onclick="showView('group-page')">
-        <span class="material-symbols-outlined" style="font-size:18px;">school</span> Debate Club
-      </a>
-      <a class="sidebar-link" onclick="showView('group-page')">
-        <span class="material-symbols-outlined" style="font-size:18px;">history_edu</span> Archival Research
-      </a>
+      <div id="sidebar-groups"><p style="font-size:12px;color:var(--color-muted);padding:6px 12px;">No groups yet.</p></div>
 
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--color-border);">
         <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);padding:0 12px 8px;">Browse</p>
@@ -734,15 +720,14 @@ body {
     <!-- Group header -->
     <div class="anim-fade-up" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
       <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:52px;height:52px;background:var(--color-blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;">CS</div>
+        <div id="gp-icon" style="width:52px;height:52px;background:var(--color-blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;">G</div>
         <div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-            <h1 style="font-size:20px;font-weight:700;">CIS 101 — Intro to Computer Science</h1>
-            <span class="badge">Class</span>
+            <h1 id="gp-name" style="font-size:20px;font-weight:700;">Group</h1>
           </div>
           <div style="display:flex;gap:16px;color:var(--color-muted);font-size:13px;">
-            <span style="display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">group</span>47 members</span>
-            <span style="display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">public</span>Public Group</span>
+            <span style="display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">group</span><span id="gp-count">0</span> members</span>
+            <span id="gp-desc" style="display:flex;align-items:center;gap:4px;"></span>
           </div>
         </div>
       </div>
@@ -840,9 +825,9 @@ body {
       <h2 id="profile-email" style="font-size:18px;font-weight:700;margin-bottom:4px;"></h2>
       <p style="color:var(--color-muted);font-size:14px;">Gannon University Student</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:28px;padding-top:24px;border-top:1px solid var(--color-border);">
-        <div><p style="font-size:22px;font-weight:700;">12</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Posts</p></div>
-        <div><p style="font-size:22px;font-weight:700;">5</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Groups</p></div>
-        <div><p style="font-size:22px;font-weight:700;">248</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Likes</p></div>
+        <div><p id="stat-posts" style="font-size:22px;font-weight:700;">0</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Posts</p></div>
+        <div><p id="stat-groups" style="font-size:22px;font-weight:700;">0</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Groups</p></div>
+        <div><p id="stat-likes" style="font-size:22px;font-weight:700;">0</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Likes</p></div>
       </div>
       <button class="btn-ghost" style="margin-top:24px;padding:10px 24px;font-size:14px;" onclick="signOut()">Sign Out</button>
     </div>
@@ -865,14 +850,8 @@ body {
     </div>
     <div style="margin-bottom:14px;">
       <input type="text" class="inp" placeholder="Post title" id="post-title" style="margin-bottom:10px;"/>
-      <select class="inp" style="margin-bottom:10px;">
-        <option>Computer Science</option>
-        <option>Physics Dept</option>
-        <option>Student Union</option>
-        <option>Debate Club</option>
-        <option>Campus Events</option>
-        <option>Marketplace</option>
-        <option>Study Groups</option>
+      <select class="inp" id="post-group" style="margin-bottom:10px;">
+        <option value="">No group (general)</option>
       </select>
       <textarea class="inp" rows="5" placeholder="What's on your mind?" id="post-body" style="resize:vertical;"></textarea>
     </div>
@@ -904,12 +883,12 @@ body {
         </div>
         <div>
           <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Member Limit <span style="color:var(--color-muted);font-weight:400;">(optional)</span></label>
-          <input type="number" class="inp" placeholder="e.g. 50"/>
+          <input type="number" class="inp" id="new-group-limit" placeholder="e.g. 50"/>
         </div>
       </div>
       <div>
         <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Description</label>
-        <textarea class="inp" rows="3" placeholder="What is this group about?" style="resize:vertical;"></textarea>
+        <textarea class="inp" id="new-group-description" rows="3" placeholder="What is this group about?" style="resize:vertical;"></textarea>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px;">
         <button class="btn-ghost" onclick="closeModal('create-group-modal')" style="padding:9px 18px;">Cancel</button>
@@ -1189,6 +1168,7 @@ async function fetchPosts(sort) {
   try {
     POSTS = await api('/api/posts?sort=' + apiSort);
     renderPosts(POSTS);
+    updateProfileStats();
   } catch {
     c.innerHTML = '<p style="color:var(--color-error);padding:20px;text-align:center;">Could not load posts.</p>';
   }
@@ -1270,10 +1250,72 @@ async function fetchGroups() {
   try {
     GROUPS = await api('/api/groups');
     renderGroups(GROUPS);
+    renderSidebarGroups();
+    populatePostGroupSelect();
+    updateProfileStats();
   } catch {
     const grid = document.getElementById('groups-grid');
     if (grid) grid.innerHTML = '<p style="color:var(--color-error);padding:20px;">Could not load groups.</p>';
   }
+}
+
+function renderSidebarGroups() {
+  const sidebar = document.getElementById('sidebar-groups');
+  if (!sidebar) return;
+  const joined = GROUPS.filter(g => g.members && g.members.includes(currentUserId));
+  if (!joined.length) {
+    sidebar.innerHTML = '<p style="font-size:12px;color:var(--color-muted);padding:6px 12px;">No groups yet.</p>';
+    return;
+  }
+  sidebar.innerHTML = joined.map(g =>
+    `<a class="sidebar-link" onclick="openGroupPage('${g._id}')">
+      <span class="material-symbols-outlined" style="font-size:18px;">group</span>
+      ${g.name}
+    </a>`
+  ).join('');
+}
+
+function populatePostGroupSelect() {
+  const sel = document.getElementById('post-group');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">No group (general)</option>';
+  GROUPS.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g._id;
+    opt.textContent = g.name;
+    sel.appendChild(opt);
+  });
+}
+
+function updateProfileStats() {
+  const joined = GROUPS.filter(g => g.members && g.members.includes(currentUserId));
+  const myPosts = POSTS.filter(p => p.author && p.author._id === currentUserId);
+  const myLikes = POSTS.reduce((sum, p) => sum + (p.likes && p.likes.includes(currentUserId) ? 1 : 0), 0);
+  const sg = document.getElementById('stat-groups');
+  const sp = document.getElementById('stat-posts');
+  const sl = document.getElementById('stat-likes');
+  if (sg) sg.textContent = joined.length;
+  if (sp) sp.textContent = myPosts.length;
+  if (sl) sl.textContent = myLikes;
+}
+
+let currentGroupId = null;
+
+function openGroupPage(groupId) {
+  currentGroupId = groupId;
+  const g = GROUPS.find(g => g._id === groupId);
+  if (g) {
+    const initials = g.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const el = document.getElementById('gp-icon');
+    if (el) el.textContent = initials;
+    const nm = document.getElementById('gp-name');
+    if (nm) nm.textContent = g.name;
+    const ct = document.getElementById('gp-count');
+    if (ct) ct.textContent = g.memberCount || (g.members && g.members.length) || 0;
+    const ds = document.getElementById('gp-desc');
+    if (ds) ds.textContent = g.description || '';
+  }
+  showView('group-page');
 }
 
 function renderGroups(groups) {
@@ -1306,7 +1348,7 @@ function renderGroups(groups) {
         </div>
         <div style="display:flex;gap:8px;margin-top:auto;">
           ${joinBtn}
-          <button onclick="showView('group-page')" class="btn-ghost" style="padding:8px 12px;font-size:13px;">View</button>
+          <button onclick="openGroupPage('${g._id}')" class="btn-ghost" style="padding:8px 12px;font-size:13px;">View</button>
         </div>
       </div>
     `);
@@ -1333,16 +1375,28 @@ function filterGroups(query) {
 }
 
 function filterGroupsByCategory(cat) {
-  renderGroups(cat ? GROUPS.filter(g => g.cat === cat) : GROUPS);
+  if (!cat) { renderGroups(GROUPS); return; }
+  renderGroups(GROUPS.filter(g =>
+    g.name.toLowerCase().includes(cat.toLowerCase()) ||
+    (g.description || '').toLowerCase().includes(cat.toLowerCase())
+  ));
 }
 
 async function createGroup() {
-  const name = document.getElementById('new-group-name').value.trim();
+  const name  = document.getElementById('new-group-name').value.trim();
+  const desc  = document.getElementById('new-group-description').value.trim();
+  const limit = document.getElementById('new-group-limit').value;
   if (!name) { showToast('Enter a group name.', 'error-t'); return; }
   try {
-    await api('/api/groups', { method:'POST', body: JSON.stringify({ name }) });
+    await api('/api/groups', { method:'POST', body: JSON.stringify({
+      name,
+      description: desc,
+      limit: limit ? parseInt(limit) : undefined
+    })});
     closeModal('create-group-modal');
     document.getElementById('new-group-name').value = '';
+    document.getElementById('new-group-description').value = '';
+    document.getElementById('new-group-limit').value = '';
     showToast(name + ' created!', 'success');
     fetchGroups();
   } catch (err) {
@@ -1530,8 +1584,9 @@ async function submitPost() {
   const title = document.getElementById('post-title').value.trim();
   const body  = document.getElementById('post-body').value.trim();
   if (!title) { showToast('Add a post title.', 'error-t'); return; }
+  const groupId = document.getElementById('post-group').value || undefined;
   try {
-    await api('/api/posts', { method:'POST', body: JSON.stringify({ title, body }) });
+    await api('/api/posts', { method:'POST', body: JSON.stringify({ title, body, group: groupId }) });
     closeModal('new-post-modal');
     document.getElementById('post-title').value = '';
     document.getElementById('post-body').value = '';
