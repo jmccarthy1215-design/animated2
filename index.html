@@ -1090,23 +1090,17 @@ function signOut() {
 
 // ── Navigation ────────────────────────────────────────────────
 function showView(view) {
+  const displayMap = { feed: 'grid', messages: 'block' };
   const views = ['feed','groups','messages','group-page','profile'];
   views.forEach(v => {
     const el = document.getElementById('view-' + v);
-    if (el) {
-      el.classList.remove('active');
-      if (v === 'messages') el.style.display = 'none';
-    }
+    if (el) { el.classList.remove('active'); el.style.display = 'none'; }
   });
 
   const target = document.getElementById('view-' + view);
   if (target) {
-    if (view === 'messages') {
-      target.style.display = 'block';
-      target.classList.add('active');
-    } else {
-      target.classList.add('active');
-    }
+    target.classList.add('active');
+    target.style.display = displayMap[view] || 'block';
   }
 
   const navMap = { feed:'nav-feed', groups:'nav-groups', messages:'nav-messages', profile:'nav-profile' };
@@ -1686,16 +1680,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Messages view needs flex not block
-const msgView = document.getElementById('view-messages');
-if (msgView) {
-  const origShowView = showView;
-  window.showView = function(view) {
-    origShowView(view);
-    const mv = document.getElementById('view-messages');
-    if (mv && view === 'messages') mv.style.height = 'calc(100vh - 56px)';
-  };
-}
 </script>
 
 </body>
