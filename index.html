@@ -300,6 +300,14 @@ body {
   margin-left: auto;
 }
 
+/* ── Auth inputs — light bg so typed text is readable ─────── */
+#auth-view .inp {
+  background: #ffffff;
+  color: #111827;
+}
+#auth-view .inp::placeholder { color: #9CA3AF; }
+#auth-view .inp:focus { border-color: var(--color-blue); box-shadow: 0 0 0 3px rgba(74,144,217,0.15); }
+
 /* ── Auth ──────────────────────────────────────────────────── */
 #auth-view {
   min-height: 100vh;
