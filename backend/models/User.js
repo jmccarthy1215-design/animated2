@@ -8,10 +8,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     match: [/@gannon\.edu$/, 'Only @gannon.edu emails are accepted.']
   },
-  passwordHash: { type: String, required: true },
-  verified: { type: Boolean, default: false },
-  verificationToken: { type: String },
-  verificationExpires: { type: Date }
+  passwordHash: { type: String, required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
