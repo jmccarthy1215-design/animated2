@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<!-- build-provenance
+  pipeline: /animated-website
+  generated-at: 2026-05-02T00:00:00Z
+  brief-source: brief.txt
+  mcp:
+    stitch: fired
+    firecrawl: fired
+    magic: skipped
+  skills:
+    brand: fired
+    ui-ux-pro-max: fired
+    design-system: fired
+    design: fired
+    ui-styling: fired
+    nano-banana-2: fell-back
+  images:
+    logo: tier-3
+    hero: tier-3
+-->
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Gannon Forum — the private student network for Gannon University. Discuss classes, join groups, and connect with other students."/>
+<meta property="og:title" content="Gannon Forum"/>
+<meta property="og:description" content="The structured student discussion platform for Gannon University. Only @gannon.edu accounts."/>
+<meta property="og:type" content="website"/>
+<title>Gannon Forum</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "gf-bg":        "#0F172A",
+        "gf-surface":   "#1A2635",
+        "gf-surface2":  "#243142",
+        "gf-border":    "#2D3F52",
+        "gf-text":      "#E8EDF2",
+        "gf-muted":     "#8FA3B3",
+        "gf-blue":      "#4A90D9",
+        "gf-amber":     "#F59E0B",
+        "gf-error":     "#EF4444",
+        "gf-success":   "#22C55E",
+      },
+      fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+    }
+  }
+}
+</script>
+
+<style>
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  --color-bg:       #0F172A;
+  --color-surface:  #1A2635;
+  --color-surface2: #243142;
+  --color-border:   #2D3F52;
+  --color-text:     #E8EDF2;
+  --color-muted:    #8FA3B3;
+  --color-blue:     #4A90D9;
+  --color-amber:    #F59E0B;
+  --color-error:    #EF4444;
+  --color-success:  #22C55E;
+  --radius-sm:      4px;
+  --radius-md:      8px;
+  --radius-lg:      12px;
+  --space-xs:       4px;
+  --space-sm:       8px;
+  --space-md:       16px;
+  --space-lg:       24px;
+  --space-xl:       32px;
+  --duration-fast:  150ms;
+  --duration-base:  200ms;
+  --duration-slow:  300ms;
+  --font-heading:   "Inter", system-ui, sans-serif;
+  --font-body:      "Inter", system-ui, sans-serif;
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── Material icons ────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
+
+/* ── Views ─────────────────────────────────────────────────── */
+.view { display: none; }
+.view.active { display: block; }
+.view-flex { display: none; }
+.view-flex.active { display: flex; }
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.anim-fade-up   { animation: fadeUp   var(--duration-slow) ease both; }
+.anim-fade-in   { animation: fadeIn   var(--duration-slow) ease both; }
+.anim-slide-down{ animation: slideDown var(--duration-base) ease both; }
+.anim-scale-in  { animation: scaleIn  var(--duration-base) ease both; }
+
+.delay-1 { animation-delay: 60ms; }
+.delay-2 { animation-delay: 120ms; }
+.delay-3 { animation-delay: 180ms; }
+.delay-4 { animation-delay: 240ms; }
+.delay-5 { animation-delay: 300ms; }
+.delay-6 { animation-delay: 360ms; }
+
+/* ── Scroll-reveal ─────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Cards ─────────────────────────────────────────────────── */
+.post-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--duration-base) ease, box-shadow var(--duration-base) ease, border-color var(--duration-base) ease;
+  cursor: pointer;
+}
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  border-color: var(--color-blue);
+}
+
+.group-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--duration-base) ease;
+}
+.group-card:hover { border-color: rgba(74,144,217,0.5); }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--color-blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+.btn-primary:hover  { background: #5BA0E5; }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+.btn-ghost:hover { background: var(--color-surface2); color: var(--color-text); }
+
+/* ── Inputs ────────────────────────────────────────────────── */
+.inp {
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  outline: none;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: var(--font-body);
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+.inp:focus { border-color: var(--color-blue); box-shadow: 0 0 0 3px rgba(74,144,217,0.15); }
+.inp::placeholder { color: var(--color-muted); }
+.inp.error { border-color: var(--color-error); }
+
+.inp-error-msg {
+  color: var(--color-error);
+  font-size: 12px;
+  margin-top: 4px;
+  display: none;
+}
+.inp-error-msg.show { display: block; }
+
+/* ── Nav ───────────────────────────────────────────────────── */
+.nav-link {
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  cursor: pointer;
+}
+.nav-link:hover { color: var(--color-text); }
+.nav-link.active { color: var(--color-blue); border-bottom-color: var(--color-blue); }
+
+/* ── Vote buttons ──────────────────────────────────────────── */
+.vote-btn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color var(--duration-fast) ease, background var(--duration-fast) ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.vote-btn:hover { color: var(--color-blue); background: rgba(74,144,217,0.12); }
+.vote-btn.voted-up { color: var(--color-blue); }
+.vote-btn.voted-down { color: var(--color-error); }
+
+/* ── Tags / Badges ─────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(74,144,217,0.12);
+  color: var(--color-blue);
+}
+.badge-amber { background: rgba(245,158,11,0.12); color: var(--color-amber); }
+.badge-green { background: rgba(34,197,94,0.12); color: var(--color-success); }
+
+/* ── Modal ─────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(9,15,25,0.85);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-backdrop.open { display: flex; }
+.modal-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 100%; max-width: 540px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  animation: scaleIn 0.2s ease both;
+}
+
+/* ── Chat bubbles ──────────────────────────────────────────── */
+.bubble-them {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: 12px 12px 12px 2px;
+  padding: 10px 14px;
+  max-width: 70%;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.bubble-me {
+  background: var(--color-blue);
+  color: #fff;
+  border-radius: 12px 12px 2px 12px;
+  padding: 10px 14px;
+  max-width: 70%;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-left: auto;
+}
+
+/* ── Auth ──────────────────────────────────────────────────── */
+#auth-view {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(45,63,82,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,63,82,0.3) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Toast ─────────────────────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-size: 14px;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  animation: slideDown 0.2s ease;
+  max-width: 320px;
+}
+#toast.show { display: block; }
+#toast.success { border-left: 3px solid var(--color-success); }
+#toast.error-t { border-left: 3px solid var(--color-error); }
+
+/* ── Avatar ────────────────────────────────────────────────── */
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  color: var(--color-blue);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.sidebar-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background var(--duration-fast) ease, color var(--duration-fast) ease;
+  text-decoration: none;
+}
+.sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--color-text); }
+.sidebar-link.active { background: rgba(74,144,217,0.12); color: var(--color-blue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH VIEW
+═══════════════════════════════════════════════════════════ -->
+<div id="auth-view">
+  <!-- Logo -->
+  <div class="mb-8 text-center anim-fade-up">
+    <!-- Tier-3 hand-authored SVG logo -->
+    <div class="flex items-center justify-center gap-3 mb-2">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Gannon Forum logo">
+        <rect width="40" height="40" rx="8" fill="#1A2635"/>
+        <rect x="1" y="1" width="38" height="38" rx="7" stroke="#4A90D9" stroke-width="1.5" stroke-opacity="0.6"/>
+        <!-- G letterform -->
+        <path d="M10 20 A10 10 0 1 1 20 30 L20 22 L16 22" stroke="#4A90D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- forum dots -->
+        <circle cx="26" cy="14" r="2" fill="#F59E0B"/>
+        <circle cx="31" cy="18" r="1.5" fill="#4A90D9" opacity="0.6"/>
+        <circle cx="28" cy="23" r="1.5" fill="#4A90D9" opacity="0.4"/>
+      </svg>
+      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:var(--color-text);">Gannon Forum</h1>
+    </div>
+    <p style="font-size:14px;color:var(--color-muted);">The student network for Gannon University</p>
+  </div>
+
+  <!-- Auth Card -->
+  <div class="anim-fade-up delay-1" style="width:100%;max-width:460px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.4);">
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--color-border);background:var(--color-bg);">
+      <button id="tab-signin" onclick="switchAuthTab('signin')"
+        style="flex:1;padding:14px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;border-bottom:2px solid var(--color-blue);color:var(--color-blue);transition:all 0.15s ease;">
+        Sign In
+      </button>
+      <button id="tab-register" onclick="switchAuthTab('register')"
+        style="flex:1;padding:14px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;color:var(--color-muted);transition:all 0.15s ease;">
+        Create Account
+      </button>
+    </div>
+
+    <div style="padding:28px;">
+      <!-- Sign In Form -->
+      <form id="signin-form" onsubmit="handleSignIn(event)" style="display:block;">
+        <div style="margin-bottom:18px;">
+          <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Email Address</label>
+          <input id="si-email" type="email" class="inp" placeholder="yourname@gannon.edu" autocomplete="email"/>
+          <p id="si-email-err" class="inp-error-msg">Enter your @gannon.edu email address.</p>
+        </div>
+        <div style="margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="font-size:13px;font-weight:600;">Password</label>
+            <a href="#" style="font-size:12px;color:var(--color-blue);text-decoration:none;">Forgot password?</a>
+          </div>
+          <div style="position:relative;">
+            <input id="si-password" type="password" class="inp" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px;"/>
+            <button type="button" onclick="togglePw('si-password','si-pw-icon')"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--color-muted);">
+              <span id="si-pw-icon" class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+          <p id="si-pass-err" class="inp-error-msg">Password is required.</p>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;padding:12px;font-size:15px;margin-top:20px;">
+          Sign In
+        </button>
+        <p style="text-align:center;font-size:12px;color:var(--color-muted);margin-top:16px;">
+          Demo: use any @gannon.edu email + any password
+        </p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" onsubmit="handleRegister(event)" style="display:none;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Email Address</label>
+          <input id="reg-email" type="email" class="inp" placeholder="yourname@gannon.edu" autocomplete="email" oninput="validateGannonEmail(this,'reg-email-err')"/>
+          <p id="reg-email-err" class="inp-error-msg">Must be a @gannon.edu email address.</p>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Password</label>
+          <div style="position:relative;">
+            <input id="reg-password" type="password" class="inp" placeholder="At least 8 characters" style="padding-right:44px;"/>
+            <button type="button" onclick="togglePw('reg-password','reg-pw-icon')"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--color-muted);">
+              <span id="reg-pw-icon" class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+          <p id="reg-pass-err" class="inp-error-msg">Password must be at least 8 characters.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Confirm Password</label>
+          <input id="reg-confirm" type="password" class="inp" placeholder="••••••••"/>
+          <p id="reg-confirm-err" class="inp-error-msg">Passwords do not match.</p>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--color-muted);cursor:pointer;margin-bottom:20px;">
+          <input id="reg-terms" type="checkbox" style="margin-top:2px;accent-color:var(--color-blue);"/>
+          I agree to the <a href="#" style="color:var(--color-blue);">Terms of Service</a> and <a href="#" style="color:var(--color-blue);">Privacy Policy</a>
+        </label>
+        <button type="submit" class="btn-primary" style="width:100%;padding:12px;font-size:15px;">
+          Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <p class="anim-fade-up delay-2" style="margin-top:20px;font-size:12px;color:var(--color-muted);text-align:center;">
+    Only Gannon University students may register. Requires a valid @gannon.edu email.
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP (hidden until auth)
+═══════════════════════════════════════════════════════════ -->
+<div id="app" style="display:none;">
+
+  <!-- ── Navbar ─────────────────────────────────────────────── -->
+  <header id="navbar" style="position:sticky;top:0;z-index:100;height:56px;background:rgba(15,23,42,0.95);border-bottom:1px solid var(--color-border);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;">
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showView('feed')">
+      <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="40" height="40" rx="8" fill="#1A2635"/>
+        <rect x="1" y="1" width="38" height="38" rx="7" stroke="#4A90D9" stroke-width="1.5" stroke-opacity="0.6"/>
+        <path d="M10 20 A10 10 0 1 1 20 30 L20 22 L16 22" stroke="#4A90D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="26" cy="14" r="2" fill="#F59E0B"/>
+        <circle cx="31" cy="18" r="1.5" fill="#4A90D9" opacity="0.6"/>
+        <circle cx="28" cy="23" r="1.5" fill="#4A90D9" opacity="0.4"/>
+      </svg>
+      <span style="font-size:17px;font-weight:700;letter-spacing:-0.01em;">Gannon Forum</span>
+    </div>
+
+    <!-- Nav links (desktop) -->
+    <nav style="display:flex;align-items:center;gap:4px;" class="hidden md:flex">
+      <a class="nav-link active" id="nav-feed"     onclick="showView('feed')"     style="padding:6px 14px;">Home</a>
+      <a class="nav-link"        id="nav-groups"   onclick="showView('groups')"   style="padding:6px 14px;">Groups</a>
+      <a class="nav-link"        id="nav-messages" onclick="showView('messages')" style="padding:6px 14px;">Messages</a>
+      <a class="nav-link"        id="nav-profile"  onclick="showView('profile')"  style="padding:6px 14px;">Profile</a>
+    </nav>
+
+    <!-- Actions -->
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="btn-primary hidden md:flex items-center gap-1" style="padding:7px 16px;font-size:13px;" onclick="openModal('new-post-modal')">
+        <span class="material-symbols-outlined" style="font-size:16px;">add</span>
+        New Post
+      </button>
+      <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;" title="Notifications">
+        <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
+      </button>
+      <div onclick="showView('profile')" style="cursor:pointer;">
+        <div class="avatar" id="nav-avatar">?</div>
+      </div>
+      <!-- Mobile menu -->
+      <button class="md:hidden" style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;" onclick="toggleMobileMenu()">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" style="display:none;position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--color-surface);border-bottom:1px solid var(--color-border);padding:12px 0;">
+    <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('feed');toggleMobileMenu()">
+      <span class="material-symbols-outlined">home</span> Home
+    </a>
+    <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('groups');toggleMobileMenu()">
+      <span class="material-symbols-outlined">groups</span> Groups
+    </a>
+    <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('messages');toggleMobileMenu()">
+      <span class="material-symbols-outlined">mail</span> Messages
+    </a>
+    <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('profile');toggleMobileMenu()">
+      <span class="material-symbols-outlined">person</span> Profile
+    </a>
+    <div style="margin:12px 8px 4px;">
+      <button class="btn-primary" style="width:100%;padding:10px;font-size:14px;" onclick="openModal('new-post-modal');toggleMobileMenu()">+ New Post</button>
+    </div>
+  </div>
+
+  <!-- ── FEED VIEW ─────────────────────────────────────────── -->
+  <div id="view-feed" class="view active" style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:240px 1fr 280px;gap:0;min-height:calc(100vh - 56px);">
+
+    <!-- Left sidebar -->
+    <aside style="padding:20px 16px;border-right:1px solid var(--color-border);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;" class="hidden lg:block">
+      <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);padding:0 12px 8px;">Your Groups</p>
+      <a class="sidebar-link active" onclick="showView('group-page')">
+        <span class="material-symbols-outlined" style="font-size:18px;">terminal</span> Computer Science
+      </a>
+      <a class="sidebar-link" onclick="showView('group-page')">
+        <span class="material-symbols-outlined" style="font-size:18px;">science</span> Physics Dept
+      </a>
+      <a class="sidebar-link" onclick="showView('group-page')">
+        <span class="material-symbols-outlined" style="font-size:18px;">campaign</span> Student Union
+      </a>
+      <a class="sidebar-link" onclick="showView('group-page')">
+        <span class="material-symbols-outlined" style="font-size:18px;">school</span> Debate Club
+      </a>
+      <a class="sidebar-link" onclick="showView('group-page')">
+        <span class="material-symbols-outlined" style="font-size:18px;">history_edu</span> Archival Research
+      </a>
+
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--color-border);">
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);padding:0 12px 8px;">Browse</p>
+        <a class="sidebar-link" onclick="showView('groups')">
+          <span class="material-symbols-outlined" style="font-size:18px;">explore</span> All Groups
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main feed -->
+    <main style="padding:28px 24px;max-width:720px;justify-self:center;width:100%;">
+      <!-- Filter bar -->
+      <div class="anim-slide-down" style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
+        <button class="btn-primary" id="filter-week" onclick="setFilter('week')" style="padding:7px 16px;font-size:13px;">Top This Week</button>
+        <button class="btn-ghost" id="filter-recent" onclick="setFilter('recent')" style="padding:7px 16px;font-size:13px;">Recent</button>
+        <button class="btn-ghost" id="filter-liked" onclick="setFilter('liked')" style="padding:7px 16px;font-size:13px;">Most Liked</button>
+      </div>
+
+      <!-- Posts -->
+      <div id="posts-container" style="display:flex;flex-direction:column;gap:12px;">
+        <!-- Populated by JS -->
+      </div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside style="padding:20px 16px;border-left:1px solid var(--color-border);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;" class="hidden lg:block">
+      <p style="font-size:13px;font-weight:600;margin-bottom:12px;">Popular Groups</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--color-surface2);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-blue);">event</span>
+            </div>
+            <span style="font-size:13px;color:var(--color-text);">Campus Events</span>
+          </div>
+          <button class="btn-ghost" style="padding:4px 10px;font-size:12px;" onclick="showToast('Joined Campus Events!','success')">Join</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--color-surface2);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-blue);">shopping_bag</span>
+            </div>
+            <span style="font-size:13px;color:var(--color-text);">Marketplace</span>
+          </div>
+          <button class="btn-ghost" style="padding:4px 10px;font-size:12px;" onclick="showToast('Joined Marketplace!','success')">Join</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--color-surface2);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-blue);">calculate</span>
+            </div>
+            <span style="font-size:13px;color:var(--color-text);">Math Help</span>
+          </div>
+          <button class="btn-ghost" style="padding:4px 10px;font-size:12px;" onclick="showToast('Joined Math Help!','success')">Join</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--color-border);padding-top:20px;">
+        <p style="font-size:13px;font-weight:600;margin-bottom:12px;">Upcoming Events</p>
+        <div style="background:var(--color-surface2);border-radius:var(--radius-md);padding:14px;display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-blue);">Tomorrow, 4:00 PM</p>
+            <p style="font-size:13px;font-weight:500;margin-top:2px;">AI Workshop: Generative Models</p>
+            <p style="font-size:11px;color:var(--color-muted);margin-top:2px;">Zurn Hall, Rm 204</p>
+          </div>
+          <div>
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-blue);">Sat, May 10</p>
+            <p style="font-size:13px;font-weight:500;margin-top:2px;">Gannon Homecoming Parade</p>
+            <p style="font-size:11px;color:var(--color-muted);margin-top:2px;">University Square</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:10px;color:var(--color-muted);margin-top:24px;line-height:1.6;">© 2026 Gannon University. Academic Integrity Guidelines Apply.</p>
+    </aside>
+  </div>
+
+  <!-- ── GROUPS VIEW ───────────────────────────────────────── -->
+  <div id="view-groups" class="view" style="max-width:1200px;margin:0 auto;padding:32px 24px;">
+    <div class="anim-fade-up" style="margin-bottom:28px;">
+      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;">Groups</h1>
+      <p style="color:var(--color-muted);margin-top:4px;">Find your community</p>
+    </div>
+
+    <!-- Search -->
+    <div class="anim-fade-up delay-1" style="display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:240px;position:relative;">
+        <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--color-muted);font-size:20px;">search</span>
+        <input type="text" class="inp" placeholder="Search groups..." style="padding-left:40px;" oninput="filterGroups(this.value)"/>
+      </div>
+      <select class="inp" style="width:auto;padding:10px 14px;" onchange="filterGroupsByCategory(this.value)">
+        <option value="">All Categories</option>
+        <option value="Classes">Classes</option>
+        <option value="Study">Study</option>
+        <option value="Social">Social</option>
+        <option value="Clubs">Clubs</option>
+      </select>
+    </div>
+
+    <!-- Grid -->
+    <div id="groups-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- FAB -->
+    <button class="btn-primary" onclick="openModal('create-group-modal')"
+      style="position:fixed;bottom:32px;right:32px;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:50px;box-shadow:0 8px 24px rgba(74,144,217,0.4);font-size:14px;z-index:50;">
+      <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+      Create Group
+    </button>
+  </div>
+
+  <!-- ── MESSAGES VIEW ─────────────────────────────────────── -->
+  <div id="view-messages" class="view" style="height:calc(100vh - 56px);display:none;">
+    <div style="display:flex;height:100%;">
+      <!-- Conversation list -->
+      <aside style="width:320px;border-right:1px solid var(--color-border);background:var(--color-surface);display:flex;flex-direction:column;" class="hidden md:flex">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;">
+          <h2 style="font-size:15px;font-weight:600;">Messages</h2>
+          <button style="background:none;border:none;cursor:pointer;color:var(--color-blue);" title="New message">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+        </div>
+        <div style="flex:1;overflow-y:auto;">
+          <div id="convo-list"><!-- Populated by JS --></div>
+          <div style="padding:8px 12px;">
+            <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);padding:8px 4px;">Group Chats</p>
+            <div id="group-convo-list"><!-- Populated by JS --></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Chat area -->
+      <section style="flex:1;display:flex;flex-direction:column;min-width:0;">
+        <div id="chat-empty" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--color-muted);">
+          <span class="material-symbols-outlined" style="font-size:48px;opacity:0.3;">chat</span>
+          <p style="font-size:14px;">Select a conversation to start messaging</p>
+        </div>
+        <div id="chat-active" style="display:none;flex-direction:column;flex:1;height:100%;">
+          <header id="chat-header" style="height:56px;padding:0 20px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:12px;background:var(--color-bg);">
+          </header>
+          <div id="chat-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;background:var(--color-bg);">
+          </div>
+          <div style="padding:16px;border-top:1px solid var(--color-border);background:var(--color-bg);">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:10px;padding:8px 12px;">
+              <input type="text" id="msg-input" placeholder="Type a message..." style="flex:1;background:none;border:none;color:var(--color-text);font-size:14px;outline:none;"
+                onkeydown="if(event.key==='Enter')sendMessage()"/>
+              <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);" title="Attach">
+                <span class="material-symbols-outlined" style="font-size:20px;">attach_file</span>
+              </button>
+              <button onclick="sendMessage()" class="btn-primary" style="padding:7px;display:flex;border-radius:8px;" title="Send">
+                <span class="material-symbols-outlined" style="font-size:18px;">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ── GROUP PAGE VIEW ───────────────────────────────────── -->
+  <div id="view-group-page" class="view" style="max-width:1200px;margin:0 auto;padding:24px;">
+    <!-- Group header -->
+    <div class="anim-fade-up" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="width:52px;height:52px;background:var(--color-blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;">CS</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <h1 style="font-size:20px;font-weight:700;">CIS 101 — Intro to Computer Science</h1>
+            <span class="badge">Class</span>
+          </div>
+          <div style="display:flex;gap:16px;color:var(--color-muted);font-size:13px;">
+            <span style="display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">group</span>47 members</span>
+            <span style="display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">public</span>Public Group</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-ghost" style="padding:8px 16px;font-size:13px;" onclick="showToast('Left the group.','error-t')">Leave Group</button>
+        <button class="btn-ghost" style="padding:8px 16px;font-size:13px;display:flex;align-items:center;gap:4px;">
+          <span class="material-symbols-outlined" style="font-size:16px;">settings</span>Manage
+        </button>
+      </div>
+    </div>
+
+    <!-- Two-panel -->
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;height:calc(100vh - 240px);">
+      <!-- Discussion -->
+      <section style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:8px;">
+          <span class="material-symbols-outlined" style="font-size:20px;color:var(--color-blue);">forum</span>
+          <h3 style="font-size:14px;font-weight:600;color:var(--color-blue);">Discussion Feed</h3>
+          <span style="margin-left:auto;font-size:11px;color:var(--color-muted);">Last 50 messages</span>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;" id="group-chat-messages">
+          <!-- Sample messages -->
+          <div style="display:flex;gap:12px;">
+            <div class="avatar" style="background:rgba(245,158,11,0.2);color:var(--color-amber);">JD</div>
+            <div>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">j.doe@gannon.edu</span>
+                <span style="font-size:11px;color:var(--color-muted);">Today at 9:42 AM</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.5;max-width:90%;">
+                Has anyone finished the week 4 logic gates assignment? I'm having trouble with the XOR gate in the simulator.
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div class="avatar" style="background:rgba(34,197,94,0.2);color:var(--color-success);">AM</div>
+            <div>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">a.martinez@gannon.edu</span>
+                <span style="font-size:11px;color:var(--color-muted);">Today at 10:05 AM</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.04);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.5;max-width:90%;">
+                Check out page 45 in the textbook — there's a diagram for XOR using only NAND gates. It cleared things up for me!
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div class="avatar" style="background:rgba(74,144,217,0.2);color:var(--color-blue);">PROF</div>
+            <div>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                <span style="font-size:13px;font-weight:600;color:var(--color-blue);">prof.wilson@gannon.edu</span>
+                <span class="badge" style="font-size:10px;padding:1px 6px;">Professor</span>
+                <span style="font-size:11px;color:var(--color-muted);">Today at 11:30 AM</span>
+              </div>
+              <div style="background:rgba(74,144,217,0.06);border-left:2px solid var(--color-blue);border-radius:0 8px 8px 0;padding:12px 14px;font-size:14px;line-height:1.5;max-width:95%;">
+                <p style="font-weight:600;margin-bottom:4px;">Official Announcement:</p>
+                Tutorial video on XOR implementation is now in the Archives section. Should address the simulator issues.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:12px 16px;border-top:1px solid var(--color-border);background:rgba(15,23,42,0.5);">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--color-surface2);border:1px solid var(--color-border);border-radius:10px;padding:8px 12px;">
+            <textarea placeholder="Type a message to the group..." rows="1" id="group-msg-input"
+              style="flex:1;background:none;border:none;color:var(--color-text);font-size:14px;outline:none;resize:none;max-height:100px;"></textarea>
+            <button onclick="sendGroupMessage()" class="btn-primary" style="padding:7px;display:flex;border-radius:8px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">send</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Members sidebar -->
+      <aside style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;">
+          <h3 style="font-size:14px;font-weight:600;">Members</h3>
+          <span style="background:var(--color-surface2);border-radius:50px;font-size:11px;font-weight:600;padding:2px 8px;color:var(--color-muted);">47</span>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px;" id="members-list">
+          <!-- Populated by JS -->
+        </div>
+        <div style="padding:12px 16px;border-top:1px solid var(--color-border);">
+          <button class="btn-ghost" style="width:100%;padding:8px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">person_add</span> Invite Members
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ── PROFILE VIEW ──────────────────────────────────────── -->
+  <div id="view-profile" class="view" style="max-width:640px;margin:40px auto;padding:0 24px;">
+    <div class="anim-fade-up" style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:32px;text-align:center;">
+      <div class="avatar" id="profile-avatar" style="width:64px;height:64px;font-size:22px;margin:0 auto 16px;">?</div>
+      <h2 id="profile-email" style="font-size:18px;font-weight:700;margin-bottom:4px;"></h2>
+      <p style="color:var(--color-muted);font-size:14px;">Gannon University Student</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:28px;padding-top:24px;border-top:1px solid var(--color-border);">
+        <div><p style="font-size:22px;font-weight:700;">12</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Posts</p></div>
+        <div><p style="font-size:22px;font-weight:700;">5</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Groups</p></div>
+        <div><p style="font-size:22px;font-weight:700;">248</p><p style="font-size:12px;color:var(--color-muted);margin-top:2px;">Likes</p></div>
+      </div>
+      <button class="btn-ghost" style="margin-top:24px;padding:10px 24px;font-size:14px;" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════════ -->
+
+<!-- New Post Modal -->
+<div id="new-post-modal" class="modal-backdrop" onclick="closeModalOnBackdrop(event,'new-post-modal')">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 style="font-size:18px;font-weight:700;">Create Post</h2>
+      <button onclick="closeModal('new-post-modal')" style="background:none;border:none;cursor:pointer;color:var(--color-muted);">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div style="margin-bottom:14px;">
+      <input type="text" class="inp" placeholder="Post title" id="post-title" style="margin-bottom:10px;"/>
+      <select class="inp" style="margin-bottom:10px;">
+        <option>Computer Science</option>
+        <option>Physics Dept</option>
+        <option>Student Union</option>
+        <option>Debate Club</option>
+        <option>Campus Events</option>
+        <option>Marketplace</option>
+        <option>Study Groups</option>
+      </select>
+      <textarea class="inp" rows="5" placeholder="What's on your mind?" id="post-body" style="resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+      <button class="btn-ghost" onclick="closeModal('new-post-modal')" style="padding:9px 18px;">Cancel</button>
+      <button class="btn-primary" onclick="submitPost()" style="padding:9px 20px;">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Group Modal -->
+<div id="create-group-modal" class="modal-backdrop" onclick="closeModalOnBackdrop(event,'create-group-modal')">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 style="font-size:18px;font-weight:700;">Create New Group</h2>
+      <button onclick="closeModal('create-group-modal')" style="background:none;border:none;cursor:pointer;color:var(--color-muted);">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Group Name</label>
+        <input type="text" class="inp" placeholder="e.g. CIS 101 Study Group" id="new-group-name"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Category</label>
+          <select class="inp"><option>Study</option><option>Classes</option><option>Social</option><option>Clubs</option></select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Member Limit <span style="color:var(--color-muted);font-weight:400;">(optional)</span></label>
+          <input type="number" class="inp" placeholder="e.g. 50"/>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Description</label>
+        <textarea class="inp" rows="3" placeholder="What is this group about?" style="resize:vertical;"></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px;">
+        <button class="btn-ghost" onclick="closeModal('create-group-modal')" style="padding:9px 18px;">Cancel</button>
+        <button class="btn-primary" onclick="createGroup()" style="padding:9px 20px;">Create Group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ── State ─────────────────────────────────────────────────────
+let currentUser = null;
+let currentView = 'feed';
+let currentFilter = 'week';
+let activeConvo = null;
+let toastTimer = null;
+
+// ── Data ──────────────────────────────────────────────────────
+const POSTS = [
+  { id:1, group:'Computer Science', author:'j.miller@gannon.edu', time:'2h ago', title:'Breakthrough in Quantum Computing Algorithms for Optimization Problems', votes:842, comments:124 },
+  { id:2, group:'Physics Dept',     author:'s.keller@gannon.edu', time:'5h ago', title:'New observations on the expansion rate of the local universe', votes:621, comments:89 },
+  { id:3, group:'Campus Events',    author:'events@gannon.edu',   time:'8h ago', title:'Annual Research Symposium — this Friday in Hamot Hall', votes:403, comments:34 },
+  { id:4, group:'Debate Club',      author:'r.chen@gannon.edu',   time:'12h ago', title:'Ethics of AI in Academic Research: An Open Discussion', votes:295, comments:212 },
+  { id:5, group:'Marketplace',      author:'m.white@gannon.edu',  time:'1d ago', title:'Selling Advanced Engineering Mathematics (10th Ed) — Excellent condition', votes:188, comments:12 },
+  { id:6, group:'Student Union',    author:'p.jones@gannon.edu',  time:'1d ago', title:'Update on Library Extended Hours for Finals Week', votes:142, comments:45 },
+  { id:7, group:'Study Groups',     author:'a.smith@gannon.edu',  time:'2d ago', title:'Looking for study partners for Calc III midterm — meeting Tues/Thurs', votes:98, comments:18 },
+];
+
+const GROUPS = [
+  { id:1, name:'Advanced Macroeconomics',  cat:'Classes', members:1200, desc:'Graduate-level economic theory and quantitative modeling discussions.',   joined:false },
+  { id:2, name:'Bio-Ethics Research Lab',  cat:'Study',   members:458,  desc:'Peer review and resource sharing for bioethics and modern medicine.',     joined:true  },
+  { id:3, name:'Philosophy & Film',        cat:'Social',  members:3100, desc:'Weekly analysis of classic and contemporary cinema through a philosophical lens.', joined:false },
+  { id:4, name:'The Gannon Chess Society', cat:'Clubs',   members:124,  desc:'Strategic play, historical analysis, and competitive ladders for all levels.', joined:false },
+  { id:5, name:'Data Science Capstone',    cat:'Study',   members:215,  desc:'Project management and peer assistance for data science capstone students.', joined:false },
+  { id:6, name:'Intro to Quantum Theory',  cat:'Classes', members:89,   desc:'Foundational concepts and mathematics for physics undergraduates.',         joined:true  },
+  { id:7, name:'CIS 101 — Intro to CS',    cat:'Classes', members:47,   desc:'Discussion and support for the introductory computer science course.',       joined:true  },
+  { id:8, name:'Student Union Open Forum', cat:'Social',  members:890,  desc:'Campus announcements, events, and community discussion for all students.',   joined:false },
+];
+
+const CONVOS = [
+  { id:1, name:'Julian Sterling', email:'j.sterling@gannon.edu', initials:'JS', lastMsg:'The methodology section needs revision...', time:'10:42 AM', unread:0, online:true,
+    messages:[
+      { from:'them', text:'Hello! Have you had a chance to look over the revised abstract for the symposium? I made significant changes to the methodology section.', time:'10:40 AM' },
+      { from:'me',   text:"I'm going through it now. The shift looks solid — I like how you addressed the sampling bias in the control group.", time:'10:42 AM' },
+      { from:'them', text:"Exactly. I'll be in the lab until 6 PM if you want to discuss the simulation parameters.", time:'10:45 AM' },
+    ]
+  },
+  { id:2, name:'Elena Moretti', email:'e.moretti@gannon.edu', initials:'EM', lastMsg:'Sent you a research file', time:'Now', unread:2, online:true,
+    messages:[
+      { from:'them', text:'Hey! I uploaded the draft to the shared folder. Can you take a look before Thursday?', time:'11:00 AM' },
+      { from:'them', text:'Also sent you a research file — relevant to chapter 3.', time:'11:02 AM' },
+    ]
+  },
+  { id:3, name:'David Ryker', email:'d.ryker@gannon.edu', initials:'DR', lastMsg:'Thanks for the feedback on the thesis.', time:'Yesterday', unread:0, online:false,
+    messages:[
+      { from:'me',   text:'Finished reading chapter 2 — great structure. The argument in section 2.3 could use more evidence though.', time:'Yesterday' },
+      { from:'them', text:'Thanks for the feedback on the thesis. I will revise that section.', time:'Yesterday' },
+    ]
+  },
+];
+
+const GROUP_CONVOS = [
+  { id:10, name:'Physics Research Hub', initials:'PR', lastMsg:'Sarah: New data uploaded', time:'2h ago' },
+];
+
+const MEMBERS = [
+  { initials:'PW', email:'prof.wilson@gannon.edu', role:'Owner', color:'rgba(239,68,68,0.2)', textColor:'#EF4444' },
+  { initials:'JD', email:'j.doe@gannon.edu',        role:'',      color:'rgba(74,144,217,0.2)',  textColor:'#4A90D9' },
+  { initials:'AM', email:'a.martinez@gannon.edu',   role:'',      color:'rgba(34,197,94,0.2)',   textColor:'#22C55E' },
+  { initials:'SK', email:'s.khan@gannon.edu',        role:'',      color:'rgba(139,92,246,0.2)',  textColor:'#8B5CF6' },
+  { initials:'TB', email:'t.brown@gannon.edu',       role:'',      color:'rgba(245,158,11,0.2)', textColor:'#F59E0B' },
+  { initials:'LW', email:'l.wu@gannon.edu',          role:'',      color:'rgba(156,163,175,0.2)', textColor:'#9CA3AF' },
+  { initials:'RG', email:'r.garcia@gannon.edu',      role:'',      color:'rgba(74,144,217,0.2)', textColor:'#4A90D9' },
+];
+
+// ── Auth ──────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+  const signin   = document.getElementById('signin-form');
+  const register = document.getElementById('register-form');
+  const tabSi    = document.getElementById('tab-signin');
+  const tabReg   = document.getElementById('tab-register');
+  if (tab === 'signin') {
+    signin.style.display = 'block'; register.style.display = 'none';
+    tabSi.style.borderBottomColor = 'var(--color-blue)'; tabSi.style.color = 'var(--color-blue)';
+    tabReg.style.borderBottomColor = 'transparent'; tabReg.style.color = 'var(--color-muted)';
+  } else {
+    signin.style.display = 'none'; register.style.display = 'block';
+    tabReg.style.borderBottomColor = 'var(--color-blue)'; tabReg.style.color = 'var(--color-blue)';
+    tabSi.style.borderBottomColor = 'transparent'; tabSi.style.color = 'var(--color-muted)';
+  }
+}
+
+function validateGannonEmail(input, errId) {
+  const val = input.value.trim();
+  const err = document.getElementById(errId);
+  if (val && !val.endsWith('@gannon.edu')) {
+    input.classList.add('error'); err.classList.add('show');
+    return false;
+  }
+  input.classList.remove('error'); err.classList.remove('show');
+  return true;
+}
+
+function handleSignIn(e) {
+  e.preventDefault();
+  const email = document.getElementById('si-email').value.trim();
+  const pass  = document.getElementById('si-password').value;
+  let ok = true;
+  if (!email.endsWith('@gannon.edu')) {
+    document.getElementById('si-email').classList.add('error');
+    document.getElementById('si-email-err').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('si-email').classList.remove('error');
+    document.getElementById('si-email-err').classList.remove('show');
+  }
+  if (!pass) {
+    document.getElementById('si-password').classList.add('error');
+    document.getElementById('si-pass-err').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('si-password').classList.remove('error');
+    document.getElementById('si-pass-err').classList.remove('show');
+  }
+  if (ok) login(email);
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const email   = document.getElementById('reg-email').value.trim();
+  const pass    = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  const terms   = document.getElementById('reg-terms').checked;
+  let ok = true;
+  if (!email.endsWith('@gannon.edu')) {
+    document.getElementById('reg-email').classList.add('error');
+    document.getElementById('reg-email-err').classList.add('show');
+    ok = false;
+  }
+  if (pass.length < 8) {
+    document.getElementById('reg-password').classList.add('error');
+    document.getElementById('reg-pass-err').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('reg-password').classList.remove('error');
+    document.getElementById('reg-pass-err').classList.remove('show');
+  }
+  if (pass !== confirm) {
+    document.getElementById('reg-confirm').classList.add('error');
+    document.getElementById('reg-confirm-err').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('reg-confirm').classList.remove('error');
+    document.getElementById('reg-confirm-err').classList.remove('show');
+  }
+  if (!terms) { showToast('You must agree to the Terms of Service.', 'error-t'); ok = false; }
+  if (ok) {
+    showToast('Verification email sent to ' + email, 'success');
+    setTimeout(() => login(email), 1200);
+  }
+}
+
+function login(email) {
+  currentUser = email;
+  document.getElementById('auth-view').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const initials = email.split('@')[0].split('.').map(p => p[0].toUpperCase()).join('').slice(0,2);
+  document.getElementById('nav-avatar').textContent = initials;
+  document.getElementById('profile-avatar').textContent = initials;
+  document.getElementById('profile-email').textContent = email;
+  renderPosts(POSTS);
+  renderGroups(GROUPS);
+  renderConvos();
+  renderGroupPage();
+  initScrollReveal();
+  showToast('Welcome back, ' + email.split('@')[0] + '!', 'success');
+}
+
+function signOut() {
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-view').style.display = 'flex';
+  document.getElementById('si-email').value = '';
+  document.getElementById('si-password').value = '';
+}
+
+// ── Navigation ────────────────────────────────────────────────
+function showView(view) {
+  const views = ['feed','groups','messages','group-page','profile'];
+  views.forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) {
+      el.classList.remove('active');
+      if (v === 'messages') el.style.display = 'none';
+    }
+  });
+
+  const target = document.getElementById('view-' + view);
+  if (target) {
+    if (view === 'messages') {
+      target.style.display = 'block';
+      target.classList.add('active');
+    } else {
+      target.classList.add('active');
+    }
+  }
+
+  const navMap = { feed:'nav-feed', groups:'nav-groups', messages:'nav-messages', profile:'nav-profile' };
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (navMap[view]) {
+    const navEl = document.getElementById(navMap[view]);
+    if (navEl) navEl.classList.add('active');
+  }
+  currentView = view;
+  window.scrollTo(0, 0);
+}
+
+function toggleMobileMenu() {
+  const m = document.getElementById('mobile-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── Feed ──────────────────────────────────────────────────────
+function renderPosts(posts) {
+  const c = document.getElementById('posts-container');
+  c.innerHTML = '';
+  posts.forEach((p, i) => {
+    const delay = Math.min(i * 60, 360);
+    c.insertAdjacentHTML('beforeend', `
+      <article class="post-card anim-fade-up" style="padding:16px 20px;display:flex;gap:16px;animation-delay:${delay}ms;">
+        <!-- Vote column -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px;">
+          <button class="vote-btn" onclick="vote(${p.id},1,this)" title="Upvote">
+            <span class="material-symbols-outlined" style="font-size:22px;">arrow_drop_up</span>
+          </button>
+          <span id="votes-${p.id}" style="font-size:16px;font-weight:700;color:var(--color-text);">${p.votes}</span>
+          <button class="vote-btn" onclick="vote(${p.id},-1,this)" title="Downvote">
+            <span class="material-symbols-outlined" style="font-size:22px;">arrow_drop_down</span>
+          </button>
+        </div>
+        <!-- Content -->
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-muted);margin-bottom:6px;flex-wrap:wrap;">
+            <span style="font-weight:600;color:var(--color-blue);">${p.group}</span>
+            <span>•</span>
+            <span>Posted by ${p.author}</span>
+            <span>•</span>
+            <span>${p.time}</span>
+          </div>
+          <h3 style="font-size:15px;font-weight:700;line-height:1.4;margin-bottom:10px;color:var(--color-text);">${p.title}</h3>
+          <div style="display:flex;align-items:center;gap:16px;font-size:12px;color:var(--color-muted);">
+            <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'">
+              <span class="material-symbols-outlined" style="font-size:16px;">chat_bubble_outline</span>${p.comments} comments
+            </button>
+            <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'" onclick="showToast('Link copied!','success')">
+              <span class="material-symbols-outlined" style="font-size:16px;">share</span>Share
+            </button>
+            <button style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center;gap:4px;font-size:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--color-text)'" onmouseout="this.style.color='var(--color-muted)'" onclick="showToast('Post saved!','success')">
+              <span class="material-symbols-outlined" style="font-size:16px;">bookmark_border</span>Save
+            </button>
+          </div>
+        </div>
+      </article>
+    `);
+  });
+}
+
+function vote(id, dir, btn) {
+  const post = POSTS.find(p => p.id === id);
+  if (!post) return;
+  post.votes += dir;
+  document.getElementById('votes-' + id).textContent = post.votes;
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['week','recent','liked'].forEach(k => {
+    const btn = document.getElementById('filter-' + k);
+    btn.className = k === f ? 'btn-primary' : 'btn-ghost';
+    btn.style.cssText = k === f ? 'padding:7px 16px;font-size:13px;' : 'padding:7px 16px;font-size:13px;';
+  });
+  let sorted = [...POSTS];
+  if (f === 'recent')  sorted.sort((a,b) => a.id - b.id);
+  if (f === 'liked')   sorted.sort((a,b) => b.votes - a.votes);
+  if (f === 'week')    sorted = POSTS;
+  renderPosts(sorted);
+}
+
+// ── Groups ────────────────────────────────────────────────────
+function renderGroups(groups) {
+  const grid = document.getElementById('groups-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  groups.forEach((g, i) => {
+    const delay = Math.min(i * 50, 300);
+    const joinBtn = g.joined
+      ? `<button class="btn-ghost" style="flex:1;padding:8px;font-size:13px;color:var(--color-muted);" disabled>Joined</button>`
+      : `<button class="btn-ghost" onclick="joinGroup(${g.id})" style="flex:1;padding:8px;font-size:13px;border-color:var(--color-blue);color:var(--color-blue);">Join</button>`;
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="group-card anim-fade-up" style="padding:20px;display:flex;flex-direction:column;gap:14px;animation-delay:${delay}ms;">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <span class="badge">${g.cat}</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-muted);">
+            <span class="material-symbols-outlined" style="font-size:16px;">group</span>
+            ${g.members >= 1000 ? (g.members/1000).toFixed(1)+'k' : g.members}
+          </span>
+        </div>
+        <div>
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">${g.name}</h3>
+          <p style="font-size:13px;color:var(--color-muted);line-height:1.5;">${g.desc}</p>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:auto;">
+          ${joinBtn}
+          <button onclick="showView('group-page')" class="btn-ghost" style="padding:8px 12px;font-size:13px;">View</button>
+        </div>
+      </div>
+    `);
+  });
+}
+
+function joinGroup(id) {
+  const g = GROUPS.find(g => g.id === id);
+  if (g) { g.joined = true; renderGroups(GROUPS); showToast('Joined ' + g.name + '!', 'success'); }
+}
+
+function filterGroups(query) {
+  const q = query.toLowerCase();
+  renderGroups(GROUPS.filter(g => g.name.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q)));
+}
+
+function filterGroupsByCategory(cat) {
+  renderGroups(cat ? GROUPS.filter(g => g.cat === cat) : GROUPS);
+}
+
+function createGroup() {
+  const name = document.getElementById('new-group-name').value.trim();
+  if (!name) { showToast('Enter a group name.', 'error-t'); return; }
+  GROUPS.unshift({ id: Date.now(), name, cat:'Study', members:1, desc:'A new student group.', joined:true });
+  renderGroups(GROUPS);
+  closeModal('create-group-modal');
+  showToast(name + ' created!', 'success');
+}
+
+// ── Messages ──────────────────────────────────────────────────
+function renderConvos() {
+  const list = document.getElementById('convo-list');
+  if (!list) return;
+  list.innerHTML = '<p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);padding:12px 16px 8px;">Direct Messages</p>';
+  CONVOS.forEach(c => {
+    list.insertAdjacentHTML('beforeend', `
+      <div onclick="openConvo(${c.id})" id="convo-${c.id}"
+        style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background 0.15s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''"
+      >
+        <div style="position:relative;flex-shrink:0;">
+          <div class="avatar">${c.initials}</div>
+          ${c.online ? `<span style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:#22C55E;border:2px solid var(--color-surface);"></span>` : ''}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="font-size:14px;font-weight:600;color:var(--color-text);">${c.name}</span>
+            <span style="font-size:11px;color:${c.unread ? 'var(--color-blue)' : 'var(--color-muted)'};">${c.time}</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <p style="font-size:12px;color:${c.unread ? 'var(--color-text)' : 'var(--color-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;font-weight:${c.unread ? '600' : '400'};">${c.lastMsg}</p>
+            ${c.unread ? `<span style="background:var(--color-blue);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c.unread}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `);
+  });
+
+  const gcList = document.getElementById('group-convo-list');
+  if (gcList) {
+    gcList.innerHTML = '';
+    GROUP_CONVOS.forEach(g => {
+      gcList.insertAdjacentHTML('beforeend', `
+        <div onclick="openConvo(${g.id})"
+          style="display:flex;align-items:center;gap:12px;padding:10px 4px;cursor:pointer;transition:background 0.15s;border-radius:8px;"
+          onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''"
+        >
+          <div style="width:36px;height:36px;border-radius:8px;background:var(--color-surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span class="material-symbols-outlined" style="font-size:18px;color:var(--color-blue);">groups</span>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.name}</p>
+            <p style="font-size:12px;color:var(--color-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.lastMsg}</p>
+          </div>
+        </div>
+      `);
+    });
+  }
+}
+
+function openConvo(id) {
+  activeConvo = id;
+  const convo = CONVOS.find(c => c.id === id);
+  if (!convo) return;
+  convo.unread = 0;
+  document.getElementById('chat-empty').style.display = 'none';
+  document.getElementById('chat-active').style.display = 'flex';
+
+  const header = document.getElementById('chat-header');
+  header.innerHTML = `
+    <div style="position:relative;">
+      <div class="avatar">${convo.initials}</div>
+      ${convo.online ? `<span style="position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:#22C55E;border:2px solid var(--color-bg);"></span>` : ''}
+    </div>
+    <div>
+      <p style="font-size:14px;font-weight:600;">${convo.name}</p>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12px;color:var(--color-muted);">${convo.email}</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:var(--color-muted);"></span>
+        <span style="font-size:12px;color:${convo.online ? '#22C55E' : 'var(--color-muted)'};">${convo.online ? 'Online' : 'Offline'}</span>
+      </div>
+    </div>
+  `;
+  renderMessages(convo.messages);
+  renderConvos();
+}
+
+function renderMessages(messages) {
+  const c = document.getElementById('chat-messages');
+  c.innerHTML = `<div style="display:flex;justify-content:center;"><span style="padding:4px 12px;background:var(--color-surface);border-radius:50px;font-size:11px;color:var(--color-muted);">Today</span></div>`;
+  messages.forEach(m => {
+    if (m.from === 'me') {
+      c.insertAdjacentHTML('beforeend', `
+        <div style="display:flex;justify-content:flex-end;align-items:flex-end;gap:8px;">
+          <div>
+            <div class="bubble-me">${m.text}</div>
+            <p style="font-size:10px;color:var(--color-muted);text-align:right;margin-top:3px;">${m.time}</p>
+          </div>
+          <div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;">ME</div>
+        </div>
+      `);
+    } else {
+      const convo = CONVOS.find(c => c.id === activeConvo);
+      c.insertAdjacentHTML('beforeend', `
+        <div style="display:flex;align-items:flex-end;gap:8px;">
+          <div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;">${convo ? convo.initials : '??'}</div>
+          <div>
+            <div class="bubble-them">${m.text}</div>
+            <p style="font-size:10px;color:var(--color-muted);margin-top:3px;">${m.time}</p>
+          </div>
+        </div>
+      `);
+    }
+  });
+  c.scrollTop = c.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || !activeConvo) return;
+  const convo = CONVOS.find(c => c.id === activeConvo);
+  if (!convo) return;
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  convo.messages.push({ from:'me', text, time: now });
+  input.value = '';
+  renderMessages(convo.messages);
+}
+
+// ── Group Page ────────────────────────────────────────────────
+function renderGroupPage() {
+  const list = document.getElementById('members-list');
+  if (!list) return;
+  list.innerHTML = '';
+  MEMBERS.forEach((m, i) => {
+    list.insertAdjacentHTML('beforeend', `
+      <div style="display:flex;align-items:center;gap:10px;${i === 0 ? 'padding-bottom:10px;border-bottom:1px solid var(--color-border);' : ''}">
+        <div style="position:relative;">
+          <div class="avatar" style="background:${m.color};color:${m.textColor};">${m.initials}</div>
+          ${i === 0 ? `<div style="position:absolute;top:-4px;right:-4px;background:#F59E0B;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:9px;color:#fff;">star</span>
+          </div>` : ''}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:13px;color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.email}</p>
+          ${m.role ? `<p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#F59E0B;">${m.role}</p>` : ''}
+        </div>
+        ${i > 0 && currentUser ? `
+        <button onclick="showToast('Member removed.','error-t')" title="Remove member"
+          style="background:none;border:none;cursor:pointer;color:var(--color-muted);opacity:0;transition:opacity 0.15s;"
+          onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+          <span class="material-symbols-outlined" style="font-size:18px;">remove_circle_outline</span>
+        </button>` : ''}
+      </div>
+    `);
+  });
+}
+
+function sendGroupMessage() {
+  const inp = document.getElementById('group-msg-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  const email = currentUser || 'student@gannon.edu';
+  const initials = email.split('@')[0].split('.').map(p => p[0].toUpperCase()).join('').slice(0,2);
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const msgs = document.getElementById('group-chat-messages');
+  msgs.insertAdjacentHTML('beforeend', `
+    <div style="display:flex;gap:12px;">
+      <div class="avatar" style="background:rgba(74,144,217,0.2);color:var(--color-blue);">${initials}</div>
+      <div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+          <span style="font-size:13px;font-weight:600;color:var(--color-blue);">${email}</span>
+          <span style="font-size:11px;color:var(--color-muted);">Today at ${now}</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid var(--color-border);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.5;max-width:90%;">
+          ${text}
+        </div>
+      </div>
+    </div>
+  `);
+  inp.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Post submit ───────────────────────────────────────────────
+function submitPost() {
+  const title = document.getElementById('post-title').value.trim();
+  if (!title) { showToast('Add a post title.', 'error-t'); return; }
+  POSTS.unshift({ id: Date.now(), group:'General', author: currentUser, time:'Just now', title, votes:0, comments:0 });
+  renderPosts(POSTS);
+  closeModal('new-post-modal');
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-body').value = '';
+  showToast('Post published.', 'success');
+}
+
+// ── Modals ────────────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOnBackdrop(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3500);
+}
+
+// ── Password toggle ───────────────────────────────────────────
+function togglePw(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (inp.type === 'password') { inp.type = 'text'; icon.textContent = 'visibility_off'; }
+  else { inp.type = 'password'; icon.textContent = 'visibility'; }
+}
+
+// ── Scroll reveal ─────────────────────────────────────────────
+function initScrollReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['new-post-modal','create-group-modal'].forEach(m => closeModal(m));
+    const mm = document.getElementById('mobile-menu');
+    if (mm.style.display !== 'none') mm.style.display = 'none';
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k' && currentUser) {
+    e.preventDefault(); openModal('new-post-modal');
+  }
+});
+
+// Messages view needs flex not block
+const msgView = document.getElementById('view-messages');
+if (msgView) {
+  const origShowView = showView;
+  window.showView = function(view) {
+    origShowView(view);
+    const mv = document.getElementById('view-messages');
+    if (mv && view === 'messages') mv.style.height = 'calc(100vh - 56px)';
+  };
+}
+</script>
+
+</body>
+</html>

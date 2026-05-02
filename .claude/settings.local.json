@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__firecrawl-mcp__firecrawl_scrape",
+      "mcp__stitch__create_project",
+      "mcp__stitch__generate_screen_from_text",
+      "Bash(node *)",
+      "mcp___21st-dev_magic__21st_magic_component_builder",
+      "Bash(start index.html)",
+      "Bash(npm --version)",
+      "Bash(python3 search.py \"forum social dark\" --design-system -p \"GannonForum\")",
+      "Bash(python3 search-slides.py)",
+      "Bash(infsh --version)",
+      "Bash(npx infsh *)",
+      "Bash(python3 search.py)",
+      "Bash(python3 shadcn_add.py --help)",
+      "Bash(python3 tailwind_config_gen.py --help)",
+      "Bash(python3 generate-slide.py --help)",
+      "Bash(python3 fetch-background.py --help)",
+      "Bash(cp *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\jmcca\\\\OneDrive\\\\Documents\\\\animated-website2\\\\docs\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\jmcca\\\\OneDrive\\\\Documents\\\\animated-website2\\\\assets\")",
+      "Bash(npm install *)",
+      "Bash(npm search *)",
+      "Bash(npm info *)",
+      "Bash(npx skills *)",
+      "Bash(where infsh *)",
+      "Bash(pip install *)",
+      "Bash(python3 -m inferencesh --version)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"forum community dark academic\" --design-system -p \"GannonForum\")",
+      "Bash(python3 .claude/skills/design-system/scripts/search-slides.py \"forum dark academic\")",
+      "Bash(python3 .claude/skills/design/scripts/logo/search.py \"university forum academic\" --design-brief --brand-name \"GannonForum\")",
+      "Bash(python3 .claude/skills/ui-styling/scripts/shadcn_add.py --list)",
+      "Bash(python3 .claude/skills/ui-styling/scripts/tailwind_config_gen.py --validate-only)",
+      "Bash(python3 .claude/skills/design-system/scripts/generate-slide.py --demo)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"student forum community academic dark structured\" --design-system -p \"GannonForum\" -f markdown)",
+      "Bash(python3 .claude/skills/design-system/scripts/search-slides.py \"forum dark academic structured\" --all)",
+      "Bash(python3 *)",
+      "mcp__stitch__fetch_screen_code"
+    ]
+  }
+}

@@ -1,0 +1,379 @@
+# SITE: Gannon Forum (working name)
+
+## ROLE / CONTEXT
+
+**Role:** You are Lead Platform Architect and Product Designer for a private, student-only digital community platform.
+
+**Context:**
+You are building a **Reddit-style forum website exclusively for students**, designed to centralize communication, discussion, and social coordination within a university environment. This platform is not a casual social app—it is a **structured, high-utility student network** where conversations about classes, professors, majors, study groups, and campus life are organized, searchable, and persistent.
+
+The system prioritizes:
+
+* Identity authenticity (verified student emails only)
+* Structured discussion (posts, threads, groups)
+* Direct communication (messaging system)
+* Discoverability (filters, feeds, group visibility)
+
+You have commissioned an advanced AI-assisted development workflow using **Claude + MCPs + Skills** to build this system efficiently and modularly.
+
+This platform should feel like a **clean, modern, slightly academic version of Reddit**, not chaotic or meme-heavy. It is structured, intentional, and useful first—social second.
+
+---
+
+## CORE PLATFORM FEATURES (NON-NEGOTIABLE)
+
+### Main Feed
+
+* Classic forum-style vertical feed (like Reddit)
+* Default sorting:
+
+  * **Top posts of the week**
+  * Resets every Monday
+* Additional filters:
+
+  * Most recent
+  * Most liked (all-time or selectable range)
+* Each post includes:
+
+  * Title
+  * Content/body
+  * Author (email/username)
+  * Likes/upvotes
+  * Comments
+
+---
+
+### Navigation Bar
+
+Include a top navigation system with:
+
+* Home (main feed)
+* Groups (critical feature)
+* Messages
+* Profile / Account
+
+Design should be **clean, functional, and always accessible**
+
+---
+
+### Groups System (CORE FEATURE)
+
+* Users can create groups freely
+* Examples:
+
+  * Study groups
+  * Classes
+  * Parties
+  * Clubs
+* Group creation includes:
+
+  * Name
+  * Optional member limit
+* Group permissions:
+
+  * Owner can:
+
+    * Remove members
+    * Delete messages
+* Group behavior:
+
+  * Once joined, groups should appear **prioritized or easily accessible**
+  * Groups feel semi-exclusive/personalized to each user
+
+---
+
+### Messaging System
+
+* Direct messaging between users
+* Group messaging within groups
+* Messages persist (not temporary)
+
+---
+
+### Account Creation (STRICT REQUIREMENTS)
+
+* Login system:
+
+  * Email + password ONLY
+* Username = email (no custom usernames)
+* Email restriction:
+
+  * MUST end in **@gannon.edu**
+  * Any other domain = invalid
+* Must include:
+
+  * Email verification flow
+* All required manual setup steps must be logged in:
+
+  * `steps.txt`
+
+---
+
+## BUILD STACK
+
+You MUST use all provided skills and MCPs:
+
+* **Claude Code (core development engine)**
+* **MCPs (modular capabilities)**
+* **Vercel** → Frontend hosting
+* **Render** → Backend hosting
+* **MongoDB Atlas** → Database
+
+### Skills:
+
+* brand → messaging + tone
+* ui-ux-pro-max → styling + layout decisions
+* design-system → tokens, spacing, consistency
+* design → icons, assets if needed
+* ui-styling → components (buttons, inputs, etc.)
+* stitch → layout generation
+* firecrawl → reference extraction
+* nano-banana-2 → (optional visuals if needed)
+
+---
+
+## REQUIRED FILE OUTPUTS
+
+### 1. `steps.txt`
+
+A running log of **manual actions YOU must perform**, for example:
+
+* Upload MongoDB API key to config
+* Set environment variables
+* Configure email verification service
+* Deploy frontend/backend
+
+This file is critical—**anything Claude cannot do automatically must go here.**
+
+---
+
+### 2. `build-report.json`
+
+Tracks:
+
+* Which skills worked
+* Which failed or were skipped
+* Errors or fallbacks
+* Build issues
+
+---
+
+## REFERENCE SITE
+
+Reference: **gamecomplain.com**
+
+Use it for:
+
+* Navbar structure
+* General layout ideas
+* Dark mode behavior
+
+**DO NOT copy:**
+
+* Colors
+* UI styling
+* Branding
+
+---
+
+## PURPOSE
+
+A **private student-only discussion platform** that:
+
+* Replaces fragmented communication (group chats, random apps)
+* Centralizes academic + social interaction
+* Feels structured like a forum, but modern like a social platform
+
+---
+
+# STEP 2 — BRAND / PRODUCT VOICE
+
+### Voice Archetype:
+
+**The Structured Student Network** — clear, efficient, slightly academic, but still accessible.
+
+### Tone Dimensions:
+
+* Formal ↔ Casual: 3 (balanced)
+* Serious ↔ Playful: 2 (mostly serious)
+* Reserved ↔ Expressive: 3
+* Modern ↔ Timeless: 4 (modern)
+
+### Voice Rules:
+
+* Clear and direct
+* No fluff or over-marketing
+* Prioritize usability language:
+
+  * “Create a group”
+  * “Join discussions”
+  * “Filter posts”
+* Avoid slang-heavy or meme language
+* Avoid corporate buzzwords
+
+---
+
+# STEP 3 — DESIGN SYSTEM
+
+### Style Keywords:
+
+clean, modern, structured, minimal, academic, functional
+
+### Direction:
+
+A **clean Reddit-like interface** with:
+
+* Better spacing
+* Less clutter
+* More intentional hierarchy
+
+---
+
+### Color System
+
+* Primary: dark neutral (for dark mode)
+* Secondary: light neutral (for light mode)
+* Accent: subtle highlight color for interactions
+* Surface: soft background tones
+* Text: high contrast for readability
+
+---
+
+### Layout
+
+* Feed-based structure
+* Clear content hierarchy
+* Minimal distractions
+
+---
+
+### Spacing
+
+Use consistent spacing scale (4px base)
+
+---
+
+### Typography
+
+* Clean sans-serif (readability first)
+* Slight hierarchy between:
+
+  * Titles
+  * Post content
+  * Metadata
+
+---
+
+# STEP 4 — DATA & BACKEND STRUCTURE (MongoDB)
+
+Core collections:
+
+* users
+* posts
+* comments
+* groups
+* messages
+
+Key rules:
+
+* Email must be unique
+* Email must match `@gannon.edu`
+* Groups store:
+
+  * owner
+  * members
+  * limit
+* Posts store:
+
+  * author
+  * likes
+  * timestamps
+
+---
+
+# STEP 5 — SECTIONS & PAGES
+
+### Main Feed
+
+* Post list
+* Filters
+* Sorting
+
+### Groups Page
+
+* List of all groups
+* Create group option
+
+### Group Page
+
+* Messages
+* Members
+* Controls for owner
+
+### Messages Page
+
+* Direct chats
+* Group chats
+
+### Account Page
+
+* Email (username)
+* Basic info
+
+---
+
+# STEP 6 — INTERACTIONS
+
+Required:
+
+* Create post
+* Like post
+* Comment
+* Join group
+* Leave group
+* Send message
+
+---
+
+# STEP 7 — AUTHENTICATION FLOW
+
+* Email input
+* Validate domain (`@gannon.edu`)
+* Send verification email
+* Confirm account
+* Store securely in database
+
+---
+
+# STEP 8 — FILTERING SYSTEM
+
+Main feed filters:
+
+* Weekly top (default)
+* Recent
+* Most liked
+
+Optional:
+
+* By group
+* By topic
+
+---
+
+# STEP 9 — FINAL BUILD GOAL
+
+A **fully functional, student-only forum platform** that includes:
+
+* Verified accounts
+* Post-based feed
+* Group system
+* Messaging system
+* Filtering and sorting
+* Clean UI
+* Deployed via:
+
+  * Vercel (frontend)
+  * Render (backend)
+  * MongoDB Atlas (database)
+
+---

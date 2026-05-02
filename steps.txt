@@ -1,0 +1,116 @@
+GANNON FORUM — MANUAL SETUP STEPS
+==================================
+Generated: 2026-04-30 | Updated: 2026-05-02
+
+STEP 0: Install Backend Dependencies (NEW — do this first)
+═══════════════════════════════════════════════════════════
+The backend is now scaffolded at: animated-website2/backend/
+
+  cd animated-website2/backend
+  npm install
+
+Then fill in backend/.env with your real values (see Steps 2–3 below).
+To run locally:
+  npm run dev     ← starts on http://localhost:3001
+  npm start       ← production mode
+
+These are actions that Claude cannot perform automatically.
+Complete them in order before deploying.
+
+═══════════════════════════════════════════════════
+STEP 1: Install infsh CLI (for nano-banana-2 skill)
+═══════════════════════════════════════════════════
+The nano-banana-2 skill requires the inference.sh CLI (`infsh`).
+The Python SDK is installed but the CLI binary was not found on npm.
+
+To install:
+  Visit https://inference.sh and follow their CLI installation guide.
+  Or try: pip install inferencesh  (Python SDK — already installed)
+  Then authenticate: infsh login
+
+If infsh cannot be installed, nano-banana-2 will fall back to Tier 2
+(design skill SVG generation) in the pipeline.
+
+═══════════════════════════════════════════════════
+STEP 2: MongoDB Atlas Setup
+═══════════════════════════════════════════════════
+1. Create a MongoDB Atlas account at https://www.mongodb.com/atlas
+2. Create a new cluster (free M0 tier is fine for development)
+3. Create a database named: gannon_forum
+4. Create collections: users, posts, comments, groups, messages
+5. Add a database user with read/write access
+6. Get your connection string (looks like: mongodb+srv://user:pass@cluster.mongodb.net/gannon_forum)
+7. Add the connection string to your backend .env file as:
+   MONGODB_URI=mongodb+srv://...
+
+8. Whitelist your IP address (or 0.0.0.0/0 for development)
+
+═══════════════════════════════════════════════════
+STEP 3: Email Verification Service (Resend or SendGrid)
+═══════════════════════════════════════════════════
+The platform requires email verification for @gannon.edu accounts.
+
+Option A — Resend (recommended, generous free tier):
+  1. Sign up at https://resend.com
+  2. Add and verify your domain (or use sandbox for testing)
+  3. Get your API key
+  4. Add to backend .env: RESEND_API_KEY=re_xxxx
+
+Option B — SendGrid:
+  1. Sign up at https://sendgrid.com
+  2. Get API key
+  3. Add to backend .env: SENDGRID_API_KEY=SG.xxxx
+
+Also set in .env:
+  EMAIL_FROM=noreply@gannonforum.com (or your verified domain)
+  EMAIL_DOMAIN_WHITELIST=gannon.edu
+
+═══════════════════════════════════════════════════
+STEP 4: Backend Deployment (Render)
+═══════════════════════════════════════════════════
+1. Create account at https://render.com
+2. Connect your GitHub repo
+3. Create a new Web Service:
+   - Build Command: npm install
+   - Start Command: npm start (or node server.js)
+4. Add environment variables in Render dashboard:
+   - MONGODB_URI (from Step 2)
+   - JWT_SECRET (generate a random 64-char string)
+   - RESEND_API_KEY or SENDGRID_API_KEY (from Step 3)
+   - EMAIL_FROM
+   - EMAIL_DOMAIN_WHITELIST=gannon.edu
+   - FRONTEND_URL (your Vercel URL, added after Step 5)
+   - NODE_ENV=production
+5. Note your Render service URL (e.g., https://gannonforum-api.onrender.com)
+
+═══════════════════════════════════════════════════
+STEP 5: Frontend Deployment (Vercel)
+═══════════════════════════════════════════════════
+1. Create account at https://vercel.com
+2. Import your GitHub repo
+3. Add environment variables:
+   - VITE_API_URL (your Render URL from Step 4)
+   - or NEXT_PUBLIC_API_URL if using Next.js
+4. Deploy
+5. Note your Vercel URL and add it to Render as FRONTEND_URL (Step 4)
+
+═══════════════════════════════════════════════════
+STEP 6: Domain (Optional)
+═══════════════════════════════════════════════════
+If you want a custom domain (e.g., gannonforum.com):
+1. Purchase domain from Namecheap, Google Domains, etc.
+2. Add to Vercel: Project → Settings → Domains
+3. Update DNS records as instructed by Vercel
+4. Update FRONTEND_URL in Render environment variables
+
+═══════════════════════════════════════════════════
+SKILL STATUS SUMMARY
+═══════════════════════════════════════════════════
+✅ brand           — Working (uses docs/brand-guidelines.md)
+✅ ui-ux-pro-max   — Working (Python scripts, no external deps)
+✅ design-system   — Working (Python + Node scripts)
+✅ design          — Working (Python scripts, logo/icon/cip)
+✅ ui-styling      — Working (Python scripts, shadcn + tailwind)
+✅ slides          — Working (references only, no scripts needed)
+✅ banner-design   — Partial (requires ai-artist/ai-multimodal/chrome-devtools skills not present)
+⚠️  nano-banana-2  — Needs infsh CLI installed (see Step 1 above)

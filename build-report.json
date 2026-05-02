@@ -1,0 +1,29 @@
+{
+  "pipeline": "/animated-website",
+  "generatedAt": "2026-05-02T00:00:00Z",
+  "briefSource": "brief.txt",
+  "mcp": {
+    "stitch": "fired",
+    "firecrawl": "fired",
+    "magic": "skipped"
+  },
+  "skills": {
+    "brand": "fired",
+    "ui-ux-pro-max": "fired",
+    "design-system": "fired",
+    "design": "fired",
+    "ui-styling": "fired",
+    "nano-banana-2": "fell-back"
+  },
+  "images": {
+    "logo": "tier-3",
+    "hero": "tier-3"
+  },
+  "backend": {
+    "framework": "express",
+    "database": "mongodb-atlas",
+    "auth": "jwt + bcrypt",
+    "email": "resend",
+    "status": "scaffolded — fill in backend/.env before running"
+  }
+}
