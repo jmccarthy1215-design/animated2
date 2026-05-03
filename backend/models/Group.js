@@ -5,7 +5,8 @@ const groupSchema = new mongoose.Schema({
   description: { type: String, maxlength: 500, default: '' },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  limit: { type: Number, default: null }
+  limit: { type: Number, default: null },
+  isPublic: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Group', groupSchema);

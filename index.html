@@ -504,10 +504,11 @@ body {
 
     <!-- Nav links (desktop) -->
     <nav style="display:flex;align-items:center;gap:4px;" class="hidden md:flex">
-      <a class="nav-link active" id="nav-feed"     onclick="showView('feed')"     style="padding:6px 14px;">Home</a>
-      <a class="nav-link"        id="nav-groups"   onclick="showView('groups')"   style="padding:6px 14px;">Groups</a>
-      <a class="nav-link"        id="nav-messages" onclick="showView('messages')" style="padding:6px 14px;">Messages</a>
-      <a class="nav-link"        id="nav-profile"  onclick="showView('profile')"  style="padding:6px 14px;">Profile</a>
+      <a class="nav-link active" id="nav-feed"         onclick="showView('feed')"         style="padding:6px 14px;">Home</a>
+      <a class="nav-link"        id="nav-groups"      onclick="showView('groups')"      style="padding:6px 14px;">My Groups</a>
+      <a class="nav-link"        id="nav-find-groups" onclick="showView('find-groups')" style="padding:6px 14px;">Find Groups</a>
+      <a class="nav-link"        id="nav-messages"    onclick="showView('messages')"    style="padding:6px 14px;">Messages</a>
+      <a class="nav-link"        id="nav-profile"     onclick="showView('profile')"     style="padding:6px 14px;">Profile</a>
     </nav>
 
     <!-- Actions -->
@@ -535,7 +536,10 @@ body {
       <span class="material-symbols-outlined">home</span> Home
     </a>
     <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('groups');toggleMobileMenu()">
-      <span class="material-symbols-outlined">groups</span> Groups
+      <span class="material-symbols-outlined">groups</span> My Groups
+    </a>
+    <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('find-groups');toggleMobileMenu()">
+      <span class="material-symbols-outlined">explore</span> Find Groups
     </a>
     <a class="sidebar-link" style="margin:2px 8px;" onclick="showView('messages');toggleMobileMenu()">
       <span class="material-symbols-outlined">mail</span> Messages
@@ -558,8 +562,8 @@ body {
 
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--color-border);">
         <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);padding:0 12px 8px;">Browse</p>
-        <a class="sidebar-link" onclick="showView('groups')">
-          <span class="material-symbols-outlined" style="font-size:18px;">explore</span> All Groups
+        <a class="sidebar-link" onclick="showView('find-groups')">
+          <span class="material-symbols-outlined" style="font-size:18px;">explore</span> Find Groups
         </a>
       </div>
     </aside>
@@ -632,39 +636,41 @@ body {
     </aside>
   </div>
 
-  <!-- ── GROUPS VIEW ───────────────────────────────────────── -->
-  <div id="view-groups" class="view" style="max-width:1200px;margin:0 auto;padding:32px 24px;">
+  <!-- ── MY GROUPS VIEW ──────────────────────────────────────── -->
+  <div id="view-groups" class="view" style="max-width:900px;margin:0 auto;padding:32px 24px;">
+    <div class="anim-fade-up" style="margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;">My Groups</h1>
+        <p style="color:var(--color-muted);margin-top:4px;">Groups you've joined</p>
+      </div>
+      <button class="btn-primary" onclick="openModal('create-group-modal')" style="display:flex;align-items:center;gap:8px;padding:10px 18px;font-size:13px;">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span>Create Group
+      </button>
+    </div>
+    <div id="my-groups-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- ── FIND GROUPS VIEW ─────────────────────────────────────── -->
+  <div id="view-find-groups" class="view" style="max-width:1200px;margin:0 auto;padding:32px 24px;">
     <div class="anim-fade-up" style="margin-bottom:28px;">
-      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;">Groups</h1>
-      <p style="color:var(--color-muted);margin-top:4px;">Find your community</p>
+      <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;">Find Groups</h1>
+      <p style="color:var(--color-muted);margin-top:4px;">Discover public communities to join</p>
     </div>
 
     <!-- Search -->
     <div class="anim-fade-up delay-1" style="display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
       <div style="flex:1;min-width:240px;position:relative;">
         <span class="material-symbols-outlined" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--color-muted);font-size:20px;">search</span>
-        <input type="text" class="inp" placeholder="Search groups..." style="padding-left:40px;" oninput="filterGroups(this.value)"/>
+        <input type="text" class="inp" placeholder="Search groups..." style="padding-left:40px;" oninput="filterPublicGroups(this.value)"/>
       </div>
-      <select class="inp" style="width:auto;padding:10px 14px;" onchange="filterGroupsByCategory(this.value)">
-        <option value="">All Categories</option>
-        <option value="Classes">Classes</option>
-        <option value="Study">Study</option>
-        <option value="Social">Social</option>
-        <option value="Clubs">Clubs</option>
-      </select>
     </div>
 
     <!-- Grid -->
-    <div id="groups-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+    <div id="find-groups-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
       <!-- Populated by JS -->
     </div>
-
-    <!-- FAB -->
-    <button class="btn-primary" onclick="openModal('create-group-modal')"
-      style="position:fixed;bottom:32px;right:32px;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:50px;box-shadow:0 8px 24px rgba(74,144,217,0.4);font-size:14px;z-index:50;">
-      <span class="material-symbols-outlined" style="font-size:20px;">add</span>
-      Create Group
-    </button>
   </div>
 
   <!-- ── MESSAGES VIEW ─────────────────────────────────────── -->
@@ -837,8 +843,17 @@ body {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div>
-          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Category</label>
-          <select class="inp"><option>Study</option><option>Classes</option><option>Social</option><option>Clubs</option></select>
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Visibility</label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+              <input type="radio" name="group-visibility" id="group-public" value="public" checked style="accent-color:var(--color-blue);"/>
+              <span><span class="material-symbols-outlined" style="font-size:14px;vertical-align:-3px;">public</span> Public</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--color-muted);">
+              <input type="radio" name="group-visibility" id="group-private" value="private" style="accent-color:var(--color-blue);"/>
+              <span><span class="material-symbols-outlined" style="font-size:14px;vertical-align:-3px;">lock</span> Private</span>
+            </label>
+          </div>
         </div>
         <div>
           <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Member Limit <span style="color:var(--color-muted);font-weight:400;">(optional)</span></label>
@@ -1091,7 +1106,7 @@ function signOut() {
 // ── Navigation ────────────────────────────────────────────────
 function showView(view) {
   const displayMap = { feed: 'grid', messages: 'block' };
-  const views = ['feed','groups','messages','group-page','profile'];
+  const views = ['feed','groups','find-groups','messages','group-page','profile'];
   views.forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) { el.classList.remove('active'); el.style.display = 'none'; }
@@ -1103,7 +1118,7 @@ function showView(view) {
     target.style.display = displayMap[view] || 'block';
   }
 
-  const navMap = { feed:'nav-feed', groups:'nav-groups', messages:'nav-messages', profile:'nav-profile' };
+  const navMap = { feed:'nav-feed', groups:'nav-groups', 'find-groups':'nav-find-groups', messages:'nav-messages', profile:'nav-profile' };
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   if (navMap[view]) {
     const navEl = document.getElementById(navMap[view]);
@@ -1111,6 +1126,8 @@ function showView(view) {
   }
   currentView = view;
   window.scrollTo(0, 0);
+  if (view === 'find-groups') fetchPublicGroups();
+  if (view === 'groups') renderMyGroups();
 }
 
 function toggleMobileMenu() {
@@ -1223,14 +1240,131 @@ function setFilter(f) {
 async function fetchGroups() {
   try {
     GROUPS = await api('/api/groups');
-    renderGroups(GROUPS);
     renderSidebarGroups();
     populatePostGroupSelect();
     updateProfileStats();
+    renderMyGroups();
   } catch {
-    const grid = document.getElementById('groups-grid');
+    const grid = document.getElementById('my-groups-grid');
     if (grid) grid.innerHTML = '<p style="color:var(--color-error);padding:20px;">Could not load groups.</p>';
   }
+}
+
+let PUBLIC_GROUPS = [];
+
+async function fetchPublicGroups() {
+  const grid = document.getElementById('find-groups-grid');
+  if (grid) grid.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">Loading groups…</p>';
+  try {
+    PUBLIC_GROUPS = await api('/api/groups?public=true');
+    renderFindGroups(PUBLIC_GROUPS);
+  } catch {
+    if (grid) grid.innerHTML = '<p style="color:var(--color-error);padding:20px;">Could not load groups.</p>';
+  }
+}
+
+function renderMyGroups() {
+  const grid = document.getElementById('my-groups-grid');
+  if (!grid) return;
+  const joined = GROUPS.filter(g => g.members && g.members.includes(currentUserId));
+  if (!joined.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--color-muted);">
+      <span class="material-symbols-outlined" style="font-size:48px;opacity:0.3;display:block;margin-bottom:12px;">groups</span>
+      <p style="font-size:15px;margin-bottom:16px;">You haven't joined any groups yet.</p>
+      <button class="btn-primary" onclick="showView('find-groups')" style="padding:9px 20px;font-size:13px;">Browse Groups</button>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = '';
+  joined.forEach((g, i) => {
+    const delay = Math.min(i * 50, 300);
+    const count = g.memberCount || (g.members && g.members.length) || 0;
+    const privacy = g.isPublic === false
+      ? `<span style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--color-muted);"><span class="material-symbols-outlined" style="font-size:13px;">lock</span>Private</span>`
+      : `<span style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--color-muted);"><span class="material-symbols-outlined" style="font-size:13px;">public</span>Public</span>`;
+    const isOwner = g.owner && (g.owner._id === currentUserId || g.owner === currentUserId);
+    const adminDel = currentIsAdmin ? `<button onclick="adminDeleteGroup('${g._id}',this)" class="btn-ghost" style="padding:7px 10px;font-size:12px;color:var(--color-error);border-color:var(--color-error);" title="Delete group"><span class="material-symbols-outlined" style="font-size:15px;">delete</span></button>` : '';
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="group-card anim-fade-up" style="padding:20px;display:flex;flex-direction:column;gap:14px;animation-delay:${delay}ms;">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <div style="width:44px;height:44px;border-radius:10px;background:var(--color-blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0;">
+            ${g.name.slice(0,2).toUpperCase()}
+          </div>
+          ${privacy}
+        </div>
+        <div style="flex:1;">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">${g.name}</h3>
+          <p style="font-size:13px;color:var(--color-muted);line-height:1.5;">${g.description || 'No description.'}</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--color-border);">
+          <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-muted);">
+            <span class="material-symbols-outlined" style="font-size:15px;">group</span>${count} member${count !== 1 ? 's' : ''}
+          </span>
+          <div style="display:flex;gap:8px;">
+            ${adminDel}
+            <button onclick="openGroupPage('${g._id}')" class="btn-primary" style="padding:7px 14px;font-size:13px;">Open</button>
+          </div>
+        </div>
+      </div>
+    `);
+  });
+}
+
+function renderFindGroups(groups) {
+  const grid = document.getElementById('find-groups-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (!groups.length) {
+    grid.innerHTML = '<p style="color:var(--color-muted);padding:20px;text-align:center;">No public groups yet — create one!</p>';
+    return;
+  }
+  groups.forEach((g, i) => {
+    const delay = Math.min(i * 50, 300);
+    const count = g.memberCount || (g.members && g.members.length) || 0;
+    const isMember = g.members && currentUserId && g.members.includes(currentUserId);
+    const full = g.limit && count >= g.limit;
+    let actionBtn;
+    if (isMember) {
+      actionBtn = `<button onclick="openGroupPage('${g._id}')" class="btn-primary" style="flex:1;padding:8px;font-size:13px;">Open</button>`;
+    } else if (full) {
+      actionBtn = `<button class="btn-ghost" style="flex:1;padding:8px;font-size:13px;" disabled>Full</button>`;
+    } else {
+      actionBtn = `<button class="btn-ghost" onclick="joinGroupAndRefresh('${g._id}',this)" style="flex:1;padding:8px;font-size:13px;border-color:var(--color-blue);color:var(--color-blue);">Join</button>`;
+    }
+    const limitBadge = g.limit ? `<span style="font-size:11px;color:var(--color-muted);">${count}/${g.limit}</span>` : '';
+    const adminDel = currentIsAdmin ? `<button onclick="adminDeleteGroup('${g._id}',this)" class="btn-ghost" style="padding:8px;font-size:13px;color:var(--color-error);border-color:var(--color-error);" title="Delete"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>` : '';
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="group-card anim-fade-up" style="padding:20px;display:flex;flex-direction:column;gap:14px;animation-delay:${delay}ms;">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <div style="width:48px;height:48px;border-radius:10px;background:var(--color-blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:#fff;flex-shrink:0;">
+            ${g.name.slice(0,2).toUpperCase()}
+          </div>
+          <div style="text-align:right;">
+            <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-muted);">
+              <span class="material-symbols-outlined" style="font-size:15px;">group</span>
+              <strong style="color:var(--color-text);font-size:14px;">${count}</strong> member${count !== 1 ? 's' : ''}
+            </div>
+            ${limitBadge}
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:6px;">${g.name}</h3>
+          <p style="font-size:13px;color:var(--color-muted);line-height:1.5;">${g.description || 'No description.'}</p>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:auto;">
+          ${actionBtn}
+          ${adminDel}
+        </div>
+      </div>
+    `);
+  });
+}
+
+function filterPublicGroups(query) {
+  const q = query.toLowerCase();
+  renderFindGroups(PUBLIC_GROUPS.filter(g =>
+    g.name.toLowerCase().includes(q) || (g.description || '').toLowerCase().includes(q)
+  ));
 }
 
 function renderSidebarGroups() {
@@ -1358,22 +1492,38 @@ function filterGroupsByCategory(cat) {
   ));
 }
 
+async function joinGroupAndRefresh(id, btn) {
+  btn.disabled = true; btn.textContent = 'Joining…';
+  try {
+    await api('/api/groups/' + id + '/join', { method:'POST' });
+    showToast('Joined!', 'success');
+    await fetchGroups();
+    fetchPublicGroups();
+  } catch (err) {
+    showToast(err.message, 'error-t');
+    btn.disabled = false; btn.textContent = 'Join';
+  }
+}
+
 async function createGroup() {
-  const name  = document.getElementById('new-group-name').value.trim();
-  const desc  = document.getElementById('new-group-description').value.trim();
-  const limit = document.getElementById('new-group-limit').value;
+  const name     = document.getElementById('new-group-name').value.trim();
+  const desc     = document.getElementById('new-group-description').value.trim();
+  const limit    = document.getElementById('new-group-limit').value;
+  const isPublic = document.getElementById('group-public').checked;
   if (!name) { showToast('Enter a group name.', 'error-t'); return; }
   try {
     await api('/api/groups', { method:'POST', body: JSON.stringify({
       name,
       description: desc,
-      limit: limit ? parseInt(limit) : undefined
+      limit: limit ? parseInt(limit) : undefined,
+      isPublic
     })});
     closeModal('create-group-modal');
     document.getElementById('new-group-name').value = '';
     document.getElementById('new-group-description').value = '';
     document.getElementById('new-group-limit').value = '';
-    showToast(name + ' created!', 'success');
+    document.getElementById('group-public').checked = true;
+    showToast(name + ' created! (' + (isPublic ? 'Public' : 'Private') + ')', 'success');
     fetchGroups();
   } catch (err) {
     showToast(err.message, 'error-t');

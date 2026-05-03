@@ -5,12 +5,14 @@ const requireAdmin = require('../middleware/requireAdmin');
 const Group = require('../models/Group');
 const Post = require('../models/Post');
 
-// GET /api/groups
-router.get('/', async (_req, res) => {
+// GET /api/groups?public=true  (public discovery) | no param = all groups
+router.get('/', async (req, res) => {
   try {
-    const groups = await Group.find()
+    const filter = {};
+    if (req.query.public === 'true') filter.isPublic = true;
+    const groups = await Group.find(filter)
       .populate('owner', 'email')
-      .select('name description owner members limit createdAt')
+      .select('name description owner members limit isPublic createdAt')
       .sort({ createdAt: -1 })
       .lean();
     res.json(groups.map(g => ({ ...g, memberCount: g.members.length })));
@@ -23,7 +25,8 @@ router.get('/', async (_req, res) => {
 router.post('/', requireAuth, [
   body('name').trim().notEmpty().withMessage('Group name is required').isLength({ max: 100 }),
   body('description').optional().isLength({ max: 500 }),
-  body('limit').optional().isInt({ min: 2 }).withMessage('Limit must be at least 2')
+  body('limit').optional().isInt({ min: 2 }).withMessage('Limit must be at least 2'),
+  body('isPublic').optional().isBoolean()
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -34,7 +37,8 @@ router.post('/', requireAuth, [
       description: req.body.description || '',
       owner: req.user.id,
       members: [req.user.id],
-      limit: req.body.limit || null
+      limit: req.body.limit || null,
+      isPublic: req.body.isPublic !== false
     });
     await group.populate('owner', 'email');
     res.status(201).json(group);
